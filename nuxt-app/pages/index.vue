@@ -1,7 +1,13 @@
 <template>
-  <div>
-    <header></header>
-    <h1>Welcome to the homepage</h1>
-    <AppAlert> This is an auto-imported component </AppAlert>
+  <div class="bg-seasalt min-h-screen">
+    <AppHeader />
+
+    <main class="p-4 space-y-8">
+      <SearchBar />
+      <HeroCarousel />
+      <MapCTA />
+      <FeaturedProperties />
+      <RegionNavigation />
+    </main>
   </div>
 </template>
