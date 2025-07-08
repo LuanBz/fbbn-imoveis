@@ -8,7 +8,7 @@ namespace fbbn.API.Services
         Task<Imovel> CreateImovelAsync(ImovelDTO dto);
         Task<List<Imovel>> GetAllImoveisAsync();
         Task<Imovel> GetImovelByIdAsync(string imovelId);
-        Task<Imovel> UpdateImovelAsync(Imovel imovel, ImovelDTO dto);
+        Task<Imovel> UpdateImovelAsync(string id, ImovelDTO dto);
         Task DeleteImovelAsync(string imovelId);
     }
 }

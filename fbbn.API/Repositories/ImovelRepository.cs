@@ -40,11 +40,8 @@ namespace fbbn.API.Repositories
         }
         public async Task<bool> DeleteAsync(string imovelId)
         {
-            var existingImovel = await _context.LoadAsync<Imovel>(imovelId);
-            if (existingImovel == null)
-            {
-                throw new KeyNotFoundException($"Imovel with ID {imovelId} not found.");
-            }
+            var existingImovel = await _context.LoadAsync<Imovel>(imovelId) ?? throw new KeyNotFoundException($"Imovel with ID {imovelId} not found.");
+
             await _context.DeleteAsync(existingImovel);
             return true;
         }

@@ -8,6 +8,11 @@ namespace fbbn.API.Services
         private readonly IImovelRepository _imovelRepository = imovelRepository;
         public async Task<Imovel> CreateImovelAsync(ImovelDTO dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Nome) || string.IsNullOrWhiteSpace(dto.Descricao) || string.IsNullOrWhiteSpace(dto.Endereco) || string.IsNullOrWhiteSpace(dto.Bairro))
+            {
+                throw new ArgumentException("Nome, Descricao, Endereco e Bairro não pode estar vazio.");
+            }
+
             var imovel = new Imovel(
                 dto.Nome,
                 dto.Descricao,
@@ -33,12 +38,14 @@ namespace fbbn.API.Services
         }
         public async Task<Imovel> GetImovelByIdAsync(string imovelId)
         {
-            var imovel = await _imovelRepository.GetByIdAsync(imovelId);
+            var imovel = await _imovelRepository.GetByIdAsync(imovelId) ?? throw new KeyNotFoundException($"Imóvel com ID {imovelId} não encontrado.");
             return imovel;
         }
-        public async Task<Imovel> UpdateImovelAsync(Imovel imovel, ImovelDTO dto)
+        public async Task<Imovel> UpdateImovelAsync(string id, ImovelDTO dto)
         {
-            imovel = new Imovel(
+            var imovel = await _imovelRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"Imóvel com ID {id} não encontrado.");
+
+            imovel.Update(
                 dto.Nome,
                 dto.Descricao,
                 dto.Endereco,
@@ -51,11 +58,8 @@ namespace fbbn.API.Services
                 dto.Quartos,
                 dto.Banheiros,
                 dto.VagasGaragem
-            )
-            {
-                imovelId = imovel.imovelId,
-                DataCadastro = imovel.DataCadastro
-            };
+            );
+
             await _imovelRepository.UpdateAsync(imovel);
             return imovel;
         }

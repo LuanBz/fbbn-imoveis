@@ -7,14 +7,9 @@ namespace fbbn.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImoveisController : ControllerBase
+    public class ImoveisController(IImovelService imovelService) : ControllerBase
     {
-        private readonly IImovelService _imovelService;
-
-        public ImoveisController(IImovelService imovelService)
-        {
-            _imovelService = imovelService;
-        }
+        private readonly IImovelService _imovelService = imovelService;
 
         [HttpGet]
         public async Task<IActionResult> GetAllImoveis()
@@ -41,21 +36,14 @@ namespace fbbn.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateImovel(string id, [FromBody] ImovelDTO imovel)
         {
-            var existingImovel = await _imovelService.GetImovelByIdAsync(id);
-            if (existingImovel == null)
-            {
-                return NotFound($"Imóvel com ID {id} não encontrado.");
-            }
-
-            var updatedImovel = await _imovelService.UpdateImovelAsync(existingImovel, imovel);
+            var updatedImovel = await _imovelService.UpdateImovelAsync(id, imovel);
             return Ok(updatedImovel);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var imovel = await _imovelService.GetImovelByIdAsync(id);
-            if (imovel == null) return NotFound();
+            var imovel = await _imovelService.GetImovelByIdAsync(id) ?? throw new KeyNotFoundException($"Imóvel com ID {id} não encontrado.");
 
             await _imovelService.DeleteImovelAsync(id);
             return Ok($"Imóvel com ID {id} deletado com sucesso.");

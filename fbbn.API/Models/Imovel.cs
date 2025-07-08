@@ -34,7 +34,15 @@ namespace fbbn.API.Models
         [DynamoDBProperty]
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
 
-        public Imovel() { } 
+        public Imovel()
+        {
+            imovelId = Guid.NewGuid().ToString();
+            Nome = string.Empty;
+            Descricao = string.Empty;
+            Endereco = string.Empty;
+            Bairro = string.Empty;
+            Tipo = string.Empty;
+        }
         public Imovel(string Nome, string Descricao, string Endereco, string Bairro, string? DataLancamento, decimal Preco, decimal Precom2, string? Tipo, string? Metragem, string? Quartos, string? Banheiros, string? VagasGaragem)
         {
             imovelId = Guid.NewGuid().ToString();
@@ -52,6 +60,23 @@ namespace fbbn.API.Models
             this.VagasGaragem = VagasGaragem;
             DataCadastro = DateTime.UtcNow;
         }
+
+        public void Update(string? nome, string? descricao, string? endereco, string? bairro, string? dataLancamento, decimal? preco, decimal? precom2, string? tipo, string? metragem, string? quartos, string? banheiros, string? vagasGaragem)
+        {
+            if (!string.IsNullOrWhiteSpace(nome)) { Nome = nome; }
+            if (!string.IsNullOrWhiteSpace(descricao)) { Descricao = descricao; }
+            if (!string.IsNullOrWhiteSpace(endereco)) { Endereco = endereco; }
+            if (!string.IsNullOrWhiteSpace(bairro)) { Bairro = bairro; }
+            if (!string.IsNullOrWhiteSpace(dataLancamento)) { DataLancamento = dataLancamento; }
+            if (preco.HasValue) { Preco = preco.Value; }
+            if (precom2.HasValue) { Precom2 = precom2.Value; }
+            if (!string.IsNullOrWhiteSpace(tipo)) { Tipo = tipo; }
+            if (!string.IsNullOrWhiteSpace(metragem)) { Metragem = metragem; }
+            if (!string.IsNullOrWhiteSpace(quartos)) { Quartos = quartos; }
+            if (!string.IsNullOrWhiteSpace(banheiros)) { Banheiros = banheiros; }
+            if (!string.IsNullOrWhiteSpace(vagasGaragem)) { VagasGaragem = vagasGaragem; }
+        }
+
     }
 
 }
