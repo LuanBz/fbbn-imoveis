@@ -74,4 +74,4 @@ _ReSharper*/
 .sonar/
 
 # appsettings secrets
-fbbn.API/appsettings.Development.json
+appsettings.Development.json
