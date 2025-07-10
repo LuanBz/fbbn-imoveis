@@ -39,14 +39,15 @@ const items = [
 <template>
   <div>
     <UCarousel
-      v-slot="{ item }"
+      :items="items"
       loop
       dots
       :autoplay="{ delay: 10000 }"
-      :items="items"
-      class="w-full max-w-dvw mx-auto"
+      class="w-full max-w-dvw mx-auto mb-8"
     >
-      <HeroCard :item="item" />
+      <template #default="{ item }">
+        <HeroCard :item="item" />
+      </template>
     </UCarousel>
   </div>
 </template>

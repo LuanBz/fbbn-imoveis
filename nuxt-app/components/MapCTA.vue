@@ -3,7 +3,7 @@ import { NuxtImg } from "#components";
 </script>
 
 <template>
-  <div class="flex bg-white rounded-2xl shadow-md overflow-hidden h-48">
+  <div class="flex bg-white rounded-2xl shadow-md overflow-hidden h-full">
     <div
       class="bg-[#c0730F] w-[40%] text-white p-4 flex-shrink-0 flex items-center"
     >
