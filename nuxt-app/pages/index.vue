@@ -1,12 +1,11 @@
 <template>
-  <div class="bg-seasalt min-h-screen">
+  <div class="min-h-screen">
     <AppHeader />
-
-    <main class="p-4 space-y-8">
+    <main class="p-4 space-y-8 gap-5 flex flex-col">
       <SearchBar />
       <HeroCarousel />
       <MapCTA />
-      <FeaturedProperties />
+      <FeaturedPropertiesCard />
       <RegionNavigation />
     </main>
   </div>

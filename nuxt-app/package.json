@@ -11,9 +11,13 @@
   },
   "dependencies": {
     "@fawmi/vue-google-maps": "^0.9.79",
+    "@nuxt/image": "^1.10.0",
+    "@nuxt/ui": "^3.2.0",
     "@nuxtjs/color-mode": "^3.5.2",
+    "@tailwindcss/vite": "^4.1.11",
     "mongodb": "^6.17.0",
     "nuxt": "^3.17.6",
+    "tailwindcss": "^4.1.11",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
   },
