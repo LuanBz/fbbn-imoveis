@@ -8,24 +8,25 @@ defineProps({
 </script>
 
 <template>
-  <div class="bg-[#142F3F] text-white rounded-2xl w-52 h-52 flex flex-col">
+  <UButton
+    color="info"
+    variant="soft"
+    class="bg-[#142F3F] text-white rounded-2xl w-52 h-52 p-0 gap-0 flex flex-col"
+  >
     <nuxt-img
       v-if="item.image"
       :src="item.image"
       alt="Foto da propriedade"
       format="webp"
-      class="h-[50%] object-cover rounded-t-2xl"
+      class="w-full h-[60%] object-cover rounded-t-2xl"
     />
-    <div class="flex flex-col justify-center items-center p-2">
-      <p class="text-xl font-bold">{{ item.price }}</p>
-      <p class="text-md font-light">{{ item.locale }}</p>
-    </div>
-    <UButton
-      trailing-icon="i-lucide-arrow-right"
-      color="info"
-      variant="soft"
-      class="w-full grow rounded-t-none justify-center text-white"
-      >Ver Mais</UButton
+
+    <div
+      class="grid grid-flow-col grid-rows-2 p-4 w-full grow items-center gap-x-4"
     >
-  </div>
+      <p class="text-xl text-left font-light">{{ item.locale }}</p>
+      <p class="text-lg text-left font-bold">{{ item.price }}</p>
+      <UIcon name="mdi:arrow-right" class="row-span-2 size-7 place-self-end" />
+    </div>
+  </UButton>
 </template>
