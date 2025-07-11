@@ -30,7 +30,7 @@ defineProps({
       <div class="col-span-2 gap-3 flex flex-col">
         <div class="flex flex-row items-center gap-1">
           <UIcon name="mdi:map-marker" class="size-5" />
-          <p class="text-md">{{ item.subtitle }}</p>
+          <p class="text-md truncate">{{ item.subtitle }}</p>
         </div>
         <div class="flex flex-col gap-1">
           <h2 class="text-xl font-bold">{{ item.title }}</h2>

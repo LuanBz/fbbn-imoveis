@@ -91,12 +91,8 @@ const darkMapStyle = [
 const mapStyle = computed(() => colorMode.value === 'dark' ? darkMapStyle : lightMapStyle)
 
 </script>
-
 <template>
-  <div class="min-h-screen">
-    <AppHeader/>
-    <main class="relative">
-      <div class="relative w-full">
+  <div class="relative w-full">
         <ClientOnly>
           <GMapMap
             :center="center"
@@ -105,7 +101,7 @@ const mapStyle = computed(() => colorMode.value === 'dark' ? darkMapStyle : ligh
               styles: mapStyle,
               disableDefaultUI: true,
             }"
-            class="w-full h-[calc(100vh-64px)]"
+            class="w-full h-[calc(100vh-92px)]"
           >
             <GMapMarker
               v-for="imovel in imoveis"
@@ -120,17 +116,19 @@ const mapStyle = computed(() => colorMode.value === 'dark' ? darkMapStyle : ligh
             />
           </GMapMap>
         </ClientOnly>
-
         <div 
           v-if="activeImovel" 
-          class="absolute bottom-[100px] left-1/2 -translate-x-1/2 w-[95%] max-w-md z-10"
+          class="absolute bottom-[100px] left-1/2 -translate-x-1/2 w-[95%] max-w-md z-10 flex flex-col"
         >
+          <div class="h-7 rounded-full bg-gray-800 self-end p-2 m-2 flex flex-row justify-center items-center gap-2" @click="onMarkerClick(null)">
+            <UIcon name="mdi:close" class="size-5 bg-white" />
+          </div>
           <div class="bg-white dark:bg-[#141F3F] rounded-2xl shadow-lg flex items-center gap-3 overflow-hidden flex-col">
-            <img 
+            <nuxt-img
               :src="activeImovel.imagem" 
               alt="Foto do imóvel" 
               class="w-full h-[200px] object-cover rounded-t-xl flex-shrink-0"
-            >
+            />
             <div class="px-5 pb-5 flex flex-row overflow-hidden w-full justify-center items-center">
               <div class="flex-grow overflow-hidden">
               <p class="text-xs text-gray-500 dark:text-gray-200 truncate">{{ activeImovel.endereco }}</p>
@@ -157,13 +155,10 @@ const mapStyle = computed(() => colorMode.value === 'dark' ? darkMapStyle : ligh
             </div>
           </div>
         </div>
-
         <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-10">
             <button class="bg-[#c7863d] hover:bg-[#b5752d] text-white font-bold py-3 px-6 rounded-full shadow-lg transition-colors duration-200 whitespace-nowrap">
                 VER MAIS IMÓVEIS EM RIO DE JANEIRO
             </button>
         </div>
-      </div>
-    </main>
   </div>
 </template>
