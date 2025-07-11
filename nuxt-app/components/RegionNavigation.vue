@@ -16,7 +16,7 @@ const regions = [
       <UButton
         v-for="region in regions"
         :key="region"
-        class="rounded-2xl py-4 text-sm flex justify-center"
+        class="rounded-2xl py-4 text-sm flex justify-center bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white"
       >
         {{ region }}
       </UButton>
