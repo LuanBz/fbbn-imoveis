@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   vite: { plugins: [tailwindcss()] },
   runtimeConfig: {
     public: {
-      googleMapsApiKey: process.env.NUXT_PUBLIC_Maps_API_KEY,
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     },
   },
 });
