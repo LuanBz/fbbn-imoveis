@@ -21,9 +21,9 @@ import { NuxtImg } from "#components";
       quality="80"
     />
     <UButton
-      color="primary"
+      color="secondary"
       icon="mdi:arrow-right"
-      class="w-8 rounded-2xl place-self-end row-span-2 absolute right-5 bottom-5"
+      class="w-12 h-12 justify-center rounded-full place-self-end row-span-2 absolute right-5 bottom-5"
     />
   </div>
 </template>

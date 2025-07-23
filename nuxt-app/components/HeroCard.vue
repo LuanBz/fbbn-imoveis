@@ -22,11 +22,11 @@ defineProps({
       quality="80"
     />
     <span
-      class="bg-orange-500 text-white text-xs font-bold px-4 py-2 rounded-3xl absolute top-4 right-4"
+      class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-3xl absolute top-4 right-4"
     >
       {{ item.tag }}
     </span>
-    <div class="grow grid grid-cols-3 bg-[#142F3F] p-6">
+    <div class="grow grid grid-cols-3 bg-primary p-6">
       <div class="col-span-2 gap-3 flex flex-col">
         <div class="flex flex-row items-center gap-1">
           <UIcon name="mdi:map-marker" class="size-5" />
@@ -53,12 +53,12 @@ defineProps({
         </div>
       </div>
       <div class="flex flex-row col-span-3 gap-2 mt-4">
-        <UButton color="neutral" variant="soft" class="w-50 justify-center"
+        <UButton color="tertiary" variant="solid" class="w-50 justify-center"
           >Agende sua visita</UButton
         >
         <UButton
           trailing-icon="i-lucide-arrow-right"
-          color="primary"
+          color="secondary"
           variant="solid"
           class="w-50 justify-center"
           >Ver Mais</UButton

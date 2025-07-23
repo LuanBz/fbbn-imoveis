@@ -42,6 +42,9 @@ const items = [
       :items="items"
       loop
       dots
+      :ui="{
+        dot: 'data-[state=active]:bg-secondary',
+      }"
       :autoplay="{ delay: 10000 }"
       class="w-full max-w-dvw mx-auto mb-8"
     >

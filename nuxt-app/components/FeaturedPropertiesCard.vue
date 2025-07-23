@@ -8,25 +8,44 @@ defineProps({
 </script>
 
 <template>
-  <UButton
-    color="info"
-    variant="soft"
-    class="bg-[#142F3F] text-white rounded-2xl w-52 h-52 p-0 gap-0 flex flex-col"
+  <UCard
+    :ui="{
+      body: 'p-0 sm:p-0',
+    }"
+    class="w-50 hauto bg-primary"
   >
     <nuxt-img
       v-if="item.image"
       :src="item.image"
       alt="Foto da propriedade"
       format="webp"
-      class="w-full h-[60%] object-cover rounded-t-2xl"
+      class="w-full h-1/3 object-cover"
     />
 
-    <div
-      class="grid grid-flow-col grid-rows-2 p-4 w-full grow items-center gap-x-4"
-    >
-      <p class="text-xl text-left font-light">{{ item.locale }}</p>
-      <p class="text-lg text-left font-bold">{{ item.price }}</p>
-      <UIcon name="mdi:arrow-right" class="row-span-2 size-7 place-self-end" />
+    <div class="flex flex-col grow p-4 w-full h-2/3 gap-y-4">
+      <div class="flex flex-row gap-1 justify-start h-fit">
+        <UBadge label="Venda" variant="solid" color="tertiary" class="w-fit" />
+        <UBadge
+          label="Aluguel"
+          variant="solid"
+          color="tertiary"
+          class="w-fit"
+        />
+      </div>
+      <div>
+        <p class="text-2xl text-left font-bold text-white">{{ item.price }}</p>
+        <div class="flex flex-row items-center gap-2 text-muted">
+          <UIcon name="mdi-map-marker" />
+          <p>Barra da Tijuca</p>
+        </div>
+      </div>
+
+      <UButton
+        color="secondary"
+        icon="mdi:eye"
+        label="Mais detalhes"
+        class="rounded-2xl w-full justify-center"
+      />
     </div>
-  </UButton>
+  </UCard>
 </template>
