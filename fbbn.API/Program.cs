@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IImovelService, ImovelService>();
 builder.Services.AddScoped<IImovelRepository, ImovelRepository>();
+builder.Services.AddScoped<IS3Service, S3Service>();
 
 // AWS
 builder.Services.AddAWSService<IAmazonS3>();

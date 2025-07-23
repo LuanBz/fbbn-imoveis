@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using fbbn.API.DTOs;
 
 namespace fbbn.API.Models
 {
@@ -7,31 +8,33 @@ namespace fbbn.API.Models
     {
         [DynamoDBHashKey]
         public string imovelId { get; set; }
-        [DynamoDBProperty]
-        public string Nome { get; set; }
-        [DynamoDBProperty]
-        public string Descricao { get; set; }
-        [DynamoDBProperty]
-        public string Endereco { get; set; }
-        [DynamoDBProperty]
-        public string Bairro { get; set; }
-        [DynamoDBProperty]
-        public string? DataLancamento { get; set; }
-        [DynamoDBProperty]
-        public decimal Preco { get; set; }
-        [DynamoDBProperty] 
-        public decimal Precom2 { get; set; }
-        [DynamoDBProperty]
-        public string Tipo { get; set; }
-        [DynamoDBProperty]
-        public string? Metragem { get; set; }
-        [DynamoDBProperty]
-        public string? Quartos { get; set; }
-        [DynamoDBProperty]
-        public string? Banheiros { get; set; }
-        [DynamoDBProperty]
-        public string? VagasGaragem { get; set; }
-        [DynamoDBProperty]
+        [DynamoDBProperty] public string Nome { get; set; }
+        [DynamoDBProperty] public string Descricao { get; set; }
+        [DynamoDBProperty] public string Endereco { get; set; }
+        [DynamoDBProperty] public string Bairro { get; set; }
+        [DynamoDBProperty] public string Cidade { get; set; }
+        [DynamoDBProperty] public string Estado { get; set; }
+        [DynamoDBProperty] public string CEP { get; set; }
+        [DynamoDBProperty] public double? Latitude { get; set; }
+        [DynamoDBProperty] public double? Longitude { get; set; }
+        [DynamoDBProperty] public string? DataLancamento { get; set; }
+
+        [DynamoDBProperty] public decimal Preco { get; set; }
+        [DynamoDBProperty] public decimal Precom2 { get; set; }
+
+        [DynamoDBProperty] public string Tipo { get; set; }
+
+        [DynamoDBProperty] public double AreaTotal { get; set; }
+        [DynamoDBProperty] public double AreaConstruida { get; set; }
+        [DynamoDBProperty] public string? Metragem { get; set; }
+
+        [DynamoDBProperty] public string? Quartos { get; set; }
+        [DynamoDBProperty] public string? Banheiros { get; set; }
+        [DynamoDBProperty] public string? VagasGaragem { get; set; }
+        [DynamoDBProperty] public string? PosicaoSol { get; set; }
+
+        [DynamoDBProperty] public List<string>? Imagens { get; set; } = new List<string>();
+
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
 
         public Imovel()
@@ -41,15 +44,21 @@ namespace fbbn.API.Models
             Descricao = string.Empty;
             Endereco = string.Empty;
             Bairro = string.Empty;
+            Cidade = string.Empty;
+            Estado = string.Empty;
+            CEP = string.Empty;
             Tipo = string.Empty;
         }
-        public Imovel(string Nome, string Descricao, string Endereco, string Bairro, string? DataLancamento, decimal Preco, decimal Precom2, string? Tipo, string? Metragem, string? Quartos, string? Banheiros, string? VagasGaragem)
+        public Imovel(string Nome, string Descricao, string Endereco, string Bairro, string Cidade, string Estado, string CEP, string? DataLancamento, decimal Preco, decimal Precom2, string? Tipo, string? Metragem, string? Quartos, string? Banheiros, string? VagasGaragem, string? posicaoSol)
         {
             imovelId = Guid.NewGuid().ToString();
             this.Nome = Nome ?? throw new ArgumentNullException(nameof(Nome));
             this.Descricao = Descricao ?? throw new ArgumentNullException(nameof(Descricao));
             this.Endereco = Endereco ?? throw new ArgumentNullException(nameof(Endereco));
             this.Bairro = Bairro ?? throw new ArgumentNullException(nameof(Bairro));
+            this.Cidade = Cidade ?? throw new ArgumentNullException(nameof(Cidade));
+            this.Estado = Estado ?? throw new ArgumentNullException(nameof(Estado));
+            this.CEP = CEP ?? throw new ArgumentNullException(nameof(CEP));
             this.DataLancamento = DataLancamento;
             this.Preco = Preco;
             this.Precom2 = Precom2;
@@ -59,24 +68,34 @@ namespace fbbn.API.Models
             this.Banheiros = Banheiros;
             this.VagasGaragem = VagasGaragem;
             DataCadastro = DateTime.UtcNow;
+            PosicaoSol = posicaoSol;
         }
 
-        public void Update(string? nome, string? descricao, string? endereco, string? bairro, string? dataLancamento, decimal? preco, decimal? precom2, string? tipo, string? metragem, string? quartos, string? banheiros, string? vagasGaragem)
+        public void Update(ImovelUpdateDTO dto)
         {
-            if (!string.IsNullOrWhiteSpace(nome)) { Nome = nome; }
-            if (!string.IsNullOrWhiteSpace(descricao)) { Descricao = descricao; }
-            if (!string.IsNullOrWhiteSpace(endereco)) { Endereco = endereco; }
-            if (!string.IsNullOrWhiteSpace(bairro)) { Bairro = bairro; }
-            if (!string.IsNullOrWhiteSpace(dataLancamento)) { DataLancamento = dataLancamento; }
-            if (preco.HasValue) { Preco = preco.Value; }
-            if (precom2.HasValue) { Precom2 = precom2.Value; }
-            if (!string.IsNullOrWhiteSpace(tipo)) { Tipo = tipo; }
-            if (!string.IsNullOrWhiteSpace(metragem)) { Metragem = metragem; }
-            if (!string.IsNullOrWhiteSpace(quartos)) { Quartos = quartos; }
-            if (!string.IsNullOrWhiteSpace(banheiros)) { Banheiros = banheiros; }
-            if (!string.IsNullOrWhiteSpace(vagasGaragem)) { VagasGaragem = vagasGaragem; }
+            Nome = dto.Nome ?? Nome;
+            Descricao = dto.Descricao ?? Descricao;
+            Endereco = dto.Endereco ?? Endereco;
+            Bairro = dto.Bairro ?? Bairro;
+            Cidade = dto.Cidade ?? Cidade;
+            Estado = dto.Estado ?? Estado;
+            CEP = dto.CEP ?? CEP;
+            DataLancamento = dto.DataLancamento ?? DataLancamento;
+            Preco = dto.Preco ?? Preco;
+            Precom2 = dto.Precom2 ?? Precom2;
+            Tipo = dto.Tipo ?? Tipo;
+            Metragem = dto.Metragem ?? Metragem;
+            Quartos = dto.Quartos ?? Quartos;
+            Banheiros = dto.Banheiros ?? Banheiros;
+            VagasGaragem = dto.VagasGaragem ?? VagasGaragem;
+            PosicaoSol = dto.PosicaoSol ?? PosicaoSol;
+            Latitude = dto.Latitude ?? Latitude;
+            Longitude = dto.Longitude ?? Longitude;
+
+            if (dto.Imagens != null && dto.Imagens.Any())
+                Imagens = dto.Imagens;
         }
+
 
     }
-
 }
