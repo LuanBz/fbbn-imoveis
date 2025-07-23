@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
 import { ColorModeButton } from "#components";
+const route = useRouter();
 
 const items = ref<DropdownMenuItem[][]>([
   [
@@ -16,10 +17,16 @@ const items = ref<DropdownMenuItem[][]>([
     {
       label: "Página inicial",
       icon: "mdi:home",
+      onSelect: () => {
+        route.push("/");
+      },
     },
     {
       label: "Mapa interativo",
       icon: "mdi:map-search",
+      onSelect: () => {
+        route.push("/map");
+      },
     },
   ],
   [
@@ -34,6 +41,14 @@ const items = ref<DropdownMenuItem[][]>([
     {
       label: "Instagram",
       icon: "mdi:instagram",
+      href: "https://www.instagram.com/fbbn_lancamentosrj/",
+      target: "_blank",
+    },
+    {
+      label: "Instagram IPANEMA",
+      icon: "mdi:instagram",
+      href: "https://www.instagram.com/ipanema_fbbn/",
+      target: "_blank",
     },
   ],
 ]);

@@ -28,7 +28,6 @@ const mapSrc = computed(() =>
 </script>
 
 <template>
-  <main class="p-4 space-y-8 flex flex-col">
     <SearchBar />
     <PromotionalBanner />
     <PropertiesImageCarousel />
@@ -92,7 +91,5 @@ const mapSrc = computed(() =>
 
     <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase">Descrição</h2>
     <p>{{ property.description }}</p>
-  </main>
-
   <PropertiesMap />
 </template>
