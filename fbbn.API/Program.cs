@@ -31,6 +31,19 @@ builder.Services.AddDefaultAWSOptions(new AWSOptions
 }
 );
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowPublic",
+        policy => policy.WithOrigins("https://fbbnimoveis.com")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+
+    options.AddPolicy("AllowAdmin",
+        policy => policy.WithOrigins("https://admin.fbbnimoveis.com")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -40,10 +53,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FBBN API v1");
-        c.RoutePrefix = string.Empty;
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "fbbn API V1");
+        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
     });
 }
+
+app.UseCors("AllowPublic");
+app.UseCors("AllowAdmin");
 
 app.UseHttpsRedirection();
 
