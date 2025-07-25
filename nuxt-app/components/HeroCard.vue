@@ -56,12 +56,14 @@ defineProps({
         <UButton color="tertiary" variant="solid" class="w-50 justify-center"
           >Agende sua visita</UButton
         >
-        <UButton
-          trailing-icon="i-lucide-arrow-right"
-          color="secondary"
-          variant="solid"
-          class="w-50 justify-center"
-          >Ver Mais</UButton
+        <NuxtLink to="/properties/{{ item.id }}" class="w-50">
+          <UButton
+            trailing-icon="i-lucide-arrow-right"
+            color="secondary"
+            variant="solid"
+            class="w-full h-full justify-center"
+            >Ver Mais</UButton
+          ></NuxtLink
         >
       </div>
     </div>

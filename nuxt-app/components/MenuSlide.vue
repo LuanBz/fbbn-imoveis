@@ -62,6 +62,6 @@ const items = ref<DropdownMenuItem[][]>([
       content: 'w-48',
     }"
   >
-    <UButton icon="i-lucide-menu" color="neutral" variant="outline" size="xl" />
+    <UButton icon="i-lucide-menu" color="secondary" variant="soft" size="xl" />
   </UDropdownMenu>
 </template>

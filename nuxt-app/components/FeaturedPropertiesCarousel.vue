@@ -3,21 +3,28 @@ import FeaturedPropertiesCard from "~/components/FeaturedPropertiesCard.vue";
 
 const items = [
   {
+    id: 1,
     image: "/img/exemploG.jpg",
     price: "R$1.500.000",
     locale: "Barra da Tijuca",
   },
   {
+    id: 2,
+
     image: "/img/exemploG.jpg",
     price: "R$2.500.000",
     locale: "Copacabana",
   },
   {
+    id: 3,
+
     image: "/img/exemploG.jpg",
     price: "R$1.200.000",
     locale: "Ipanema",
   },
   {
+    id: 5,
+
     image: "/img/exemploG.jpg",
     price: "R$3.000.000",
     locale: "Leblon",

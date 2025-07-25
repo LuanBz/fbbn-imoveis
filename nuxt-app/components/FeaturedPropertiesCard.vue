@@ -39,13 +39,13 @@ defineProps({
           <p>Barra da Tijuca</p>
         </div>
       </div>
-
-      <UButton
-        color="secondary"
-        icon="mdi:eye"
-        label="Mais detalhes"
-        class="rounded-2xl w-full justify-center"
-      />
+      <NuxtLink to="/properties/{{ item.id }}">
+        <UButton
+          color="secondary"
+          icon="mdi:eye"
+          label="Mais detalhes"
+          class="rounded-2xl w-full justify-center"
+      /></NuxtLink>
     </div>
   </UCard>
 </template>
