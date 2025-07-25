@@ -8,6 +8,8 @@ namespace fbbn.API.Models
     {
         [DynamoDBHashKey]
         public string imovelId { get; set; }
+
+        #region Overview Attributes
         [DynamoDBProperty] public string Nome { get; set; }
         [DynamoDBProperty] public string Descricao { get; set; }
         [DynamoDBProperty] public string Endereco { get; set; }
@@ -17,26 +19,31 @@ namespace fbbn.API.Models
         [DynamoDBProperty] public string CEP { get; set; }
         [DynamoDBProperty] public double? Latitude { get; set; }
         [DynamoDBProperty] public double? Longitude { get; set; }
-        [DynamoDBProperty] public string? DataLancamento { get; set; }
+        [DynamoDBProperty] public string? Status { get; set; }
+        [DynamoDBProperty] public string? Tags { get; set; }
+        #endregion
 
+        #region Price Attributes
         [DynamoDBProperty] public decimal Preco { get; set; }
         [DynamoDBProperty] public decimal Precom2 { get; set; }
+        #endregion
 
+        #region Property Attributes
+        [DynamoDBProperty] public string? DataLancamento { get; set; }
         [DynamoDBProperty] public string Tipo { get; set; }
-
         [DynamoDBProperty] public double AreaTotal { get; set; }
         [DynamoDBProperty] public double AreaConstruida { get; set; }
         [DynamoDBProperty] public string? Metragem { get; set; }
-
         [DynamoDBProperty] public string? Quartos { get; set; }
         [DynamoDBProperty] public string? Banheiros { get; set; }
         [DynamoDBProperty] public string? VagasGaragem { get; set; }
         [DynamoDBProperty] public string? PosicaoSol { get; set; }
-
-        [DynamoDBProperty] public List<string>? Imagens { get; set; } = new List<string>();
+        #endregion
+        [DynamoDBProperty] public List<string>? Imagens { get; set; } = [];
 
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
 
+        #region Constructors
         public Imovel()
         {
             imovelId = Guid.NewGuid().ToString();
@@ -49,7 +56,7 @@ namespace fbbn.API.Models
             CEP = string.Empty;
             Tipo = string.Empty;
         }
-        public Imovel(string Nome, string Descricao, string Endereco, string Bairro, string Cidade, string Estado, string CEP, string? DataLancamento, decimal Preco, decimal Precom2, string? Tipo, string? Metragem, string? Quartos, string? Banheiros, string? VagasGaragem, string? posicaoSol)
+        public Imovel(string Nome, string Descricao, string Endereco, string Bairro, string Cidade, string Estado, string CEP, double? Latitude, double? Longitude, string? Status, string? Tags, decimal Preco, decimal Precom2, string? DataLancamento, string? Tipo, double AreaTotal, double AreaConstruida, string? Metragem, string? Quartos, string? Banheiros, string? VagasGaragem, string? posicaoSol)
         {
             imovelId = Guid.NewGuid().ToString();
             this.Nome = Nome ?? throw new ArgumentNullException(nameof(Nome));
@@ -59,9 +66,15 @@ namespace fbbn.API.Models
             this.Cidade = Cidade ?? throw new ArgumentNullException(nameof(Cidade));
             this.Estado = Estado ?? throw new ArgumentNullException(nameof(Estado));
             this.CEP = CEP ?? throw new ArgumentNullException(nameof(CEP));
-            this.DataLancamento = DataLancamento;
+            this.Latitude = Latitude;
+            this.Longitude = Longitude;
+            this.Status = Status;
+            this.Tags = Tags;
+            this.AreaTotal = AreaTotal;
+            this.AreaConstruida = AreaConstruida;
             this.Preco = Preco;
             this.Precom2 = Precom2;
+            this.DataLancamento = DataLancamento;
             this.Tipo = Tipo ?? throw new ArgumentNullException(nameof(Tipo));
             this.Metragem = Metragem;
             this.Quartos = Quartos;
@@ -70,7 +83,6 @@ namespace fbbn.API.Models
             DataCadastro = DateTime.UtcNow;
             PosicaoSol = posicaoSol;
         }
-
         public void Update(ImovelUpdateDTO dto)
         {
             Nome = dto.Nome ?? Nome;
@@ -91,11 +103,13 @@ namespace fbbn.API.Models
             PosicaoSol = dto.PosicaoSol ?? PosicaoSol;
             Latitude = dto.Latitude ?? Latitude;
             Longitude = dto.Longitude ?? Longitude;
-
-            if (dto.Imagens != null && dto.Imagens.Any())
-                Imagens = dto.Imagens;
+            AreaTotal = dto.AreaTotal ?? AreaTotal;
+            AreaConstruida = dto.AreaConstruida ?? AreaConstruida;
+            Status = dto.Status ?? Status;
+            Tags = dto.Tags ?? Tags;
+            Imagens = dto.Imagens ?? Imagens;
         }
-
+        #endregion
 
     }
 }

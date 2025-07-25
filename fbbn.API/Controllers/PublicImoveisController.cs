@@ -17,4 +17,10 @@ public class PublicImoveisController(IImovelService imovelService) : ControllerB
         var imovel = await imovelService.GetImovelByIdAsync(id);
         return imovel is null ? NotFound() : Ok(imovel);
     }
+    [HttpGet("bairro/{bairro}")]
+    public async Task<IActionResult> GetImovelByBairro(string bairro)
+    {
+        var imovel = await imovelService.GetImovelByBairroAsync(bairro);
+        return imovel is null ? NotFound() : Ok(imovel);
+    }
 }
