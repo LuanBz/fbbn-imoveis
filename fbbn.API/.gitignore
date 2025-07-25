@@ -75,3 +75,7 @@ _ReSharper*/
 
 # appsettings secrets
 appsettings.Development.json
+
+# Sensitive files
+.env
+docker-compose.yml

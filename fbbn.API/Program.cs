@@ -72,8 +72,8 @@ builder.Services.AddAuthorization();
 
 // AWS
 builder.Services.AddAWSService<IAmazonS3>();
-builder.Services.AddAWSService<IAmazonDynamoDB>(); 
-builder.Services.AddScoped<DynamoDBContext>();
+builder.Services.AddAWSService<IAmazonDynamoDB>();
+builder.Services.AddScoped<IDynamoDBContext, DynamoDBContext>();
 builder.Services.AddDefaultAWSOptions(new AWSOptions
 {
     Region = RegionEndpoint.SAEast1,
@@ -88,20 +88,12 @@ builder.Services.AddDefaultAWSOptions(new AWSOptions
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowPublic",
-        policy => policy.WithOrigins("https://fbbnimoveis.com")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-
-    options.AddPolicy("AllowAdmin",
-        policy => policy.WithOrigins("https://admin.fbbnimoveis.com")
+        policy => policy.WithOrigins("https://fbbn.bzra.dev", "https://admin.fbbn.bzra.dev")
                         .AllowAnyMethod()
                         .AllowAnyHeader());
 });
 
 var app = builder.Build();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -113,10 +105,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors("AllowPublic");
-app.UseCors("AllowAdmin");
-
 app.UseHttpsRedirection();
+
+app.UseCors("AllowPublic");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
