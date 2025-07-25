@@ -8,24 +8,31 @@ namespace fbbn.API.Services
         private readonly IImovelRepository _imovelRepository = imovelRepository;
         public async Task<Imovel> CreateImovelAsync(ImovelDTO dto)
         {
-            var imovel = new Imovel(
-                dto.Nome,
-                dto.Descricao,
-                dto.Endereco,
-                dto.Bairro,
-                dto.Cidade,
-                dto.Estado,
-                dto.CEP,
-                dto.DataLancamento,
-                dto.Preco,
-                dto.Precom2,
-                dto.Tipo,
-                dto.Metragem,
-                dto.Quartos,
-                dto.Banheiros,
-                dto.VagasGaragem,
-                dto.PosicaoSol
-            );
+            var imovel = new Imovel
+             {
+                Nome = dto.Nome,
+                Descricao = dto.Descricao,
+                Endereco = dto.Endereco,
+                Bairro = dto.Bairro,
+                Cidade = dto.Cidade,
+                Estado = dto.Estado,
+                CEP = dto.CEP,
+                DataLancamento = dto.DataLancamento,
+                Preco = dto.Preco,
+                Precom2 = dto.Precom2,
+                Tipo = dto.Tipo ?? string.Empty,
+                Metragem = dto.Metragem,
+                Quartos = dto.Quartos,
+                Banheiros = dto.Banheiros,
+                VagasGaragem = dto.VagasGaragem,
+                PosicaoSol = dto.PosicaoSol,
+                Latitude = dto.Latitude,
+                Longitude = dto.Longitude,
+                AreaTotal = dto.AreaTotal,
+                AreaConstruida = dto.AreaConstruida,
+                Status = dto.Status,
+                Tags = dto.Tags
+            };
 
             await _imovelRepository.CreateAsync(imovel);
             return imovel;
@@ -38,6 +45,11 @@ namespace fbbn.API.Services
         public async Task<Imovel> GetImovelByIdAsync(string imovelId)
         {
             var imovel = await _imovelRepository.GetByIdAsync(imovelId) ?? throw new KeyNotFoundException($"Imóvel com ID {imovelId} não encontrado.");
+            return imovel;
+        }
+        public async Task<List<Imovel>> GetImovelByBairroAsync(string bairro)
+        {
+            var imovel = await _imovelRepository.GetByBairroAsync(bairro) ?? throw new KeyNotFoundException($"Imóvel no bairro {bairro} não encontrado.");
             return imovel;
         }
         public async Task<Imovel> UpdateImovelAsync(string id, ImovelUpdateDTO dto)

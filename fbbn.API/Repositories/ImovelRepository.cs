@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using fbbn.API.Models;
 
 namespace fbbn.API.Repositories
@@ -26,6 +27,22 @@ namespace fbbn.API.Repositories
         public async Task<Imovel?> GetByIdAsync(string imovelId)
         {
             return await _context.LoadAsync<Imovel>(imovelId);
+        }
+        public async Task<List<Imovel>> GetByBairroAsync(string bairro)
+        {
+           var conditions = new List<ScanCondition>
+            {
+                new ScanCondition("Bairro", ScanOperator.Equal, bairro)
+            };
+
+            var search = await _context.ScanAsync<Imovel>(conditions).GetNextSetAsync();
+
+            if (!search.Any())
+            {
+                throw new Exception($"Não foi encontrado imóveis em {bairro}.");
+            }
+
+            return search.ToList();
         }
         public async Task<Imovel?> UpdateAsync(Imovel imovel)
         {
