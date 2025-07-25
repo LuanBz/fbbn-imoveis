@@ -79,7 +79,7 @@ const formatarPreco = (valor: number): string => {
 };
 
 const page = ref(1);
-const itemsPerPage = ref(10);
+const itemsPerPage = ref(2);
 const imoveisPaginados = computed(() => {
   const start = (page.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
@@ -88,7 +88,7 @@ const imoveisPaginados = computed(() => {
 </script>
 <template>
   <div class="flex w-full flex-col"><SearchBar /> <Filters /></div>
-  <h3 class="text-xl font-bold text-gray-800">
+  <h3 class="text-xl font-bold text-gray-800 dark:text-inverted">
     Foram encontrado(s) 3 em {{ bairroSelecionado }}..
   </h3>
   <div v-if="imoveisFiltrados.length > 0" class="flex flex-col gap-4">
@@ -155,7 +155,7 @@ const imoveisPaginados = computed(() => {
     v-model:page="page"
     :items-per-page="itemsPerPage"
     :total="imoveisFiltrados.length"
-    color="primary"
+    active-color="secondary"
     variant="outline"
     size="xl"
     class="place-self-center"

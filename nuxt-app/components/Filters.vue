@@ -25,14 +25,49 @@ const valueArea = ref([1, 20000]);
           <div>
             <p class="text-sm font-semibold mb-2">Tipo de imóvel</p>
             <div class="flex flex-wrap gap-2">
-              <UBadge size="xl" label="Apartamento" variant="outline" />
-              <UBadge size="xl" label="Casa" variant="outline" />
-              <UBadge size="xl" label="Cobertura" variant="outline" />
-              <UBadge size="xl" label="Studio" variant="outline" />
+              <UBadge
+                size="xl"
+                label="Apartamento"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="Casa"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="Cobertura"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="Studio"
+                variant="outline"
+                class="dark:text-muted"
+              />
             </div>
           </div>
           <div>
             <p class="text-sm font-semibold mb-2">Faixa de preço (R$)</p>
+            <div class="flex items-center gap-4">
+              <UInput
+                type="number"
+                placeholder="Mín."
+                icon="i-heroicons-currency-dollar"
+              />
+              <UInput
+                type="number"
+                placeholder="Máx."
+                icon="i-heroicons-currency-dollar"
+              />
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-semibold mb-2">Faixa de preço m² (R$)</p>
             <div class="flex items-center gap-4">
               <UInput
                 type="number"
@@ -58,35 +93,105 @@ const valueArea = ref([1, 20000]);
           <div>
             <p class="text-sm font-semibold mb-2">Quartos</p>
             <div class="flex gap-2 flex-wrap">
-              <UBadge size="xl" label="1+" variant="outline" />
-              <UBadge size="xl" label="2+" variant="outline" />
-              <UBadge size="xl" label="3+" variant="outline" />
-              <UBadge size="xl" label="4+" variant="outline" />
-              <UBadge size="xl" label="5+" variant="outline" />
+              <UBadge
+                size="xl"
+                label="1"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="2"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="3"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="4"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="5+"
+                variant="outline"
+                class="dark:text-muted"
+              />
             </div>
           </div>
           <div>
             <p class="text-sm font-semibold mb-2">Banheiros</p>
             <div class="flex gap-2 flex-wrap">
-              <UBadge size="xl" label="1+" variant="outline" />
-              <UBadge size="xl" label="2+" variant="outline" />
-              <UBadge size="xl" label="3+" variant="outline" />
-              <UBadge size="xl" label="4+" variant="outline" />
+              <UBadge
+                size="xl"
+                label="1"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="2"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="3"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="4+"
+                variant="outline"
+                class="dark:text-muted"
+              />
             </div>
           </div>
           <div>
             <p class="text-sm font-semibold mb-2">Vagas</p>
             <div class="flex gap-2 flex-wrap">
-              <UBadge size="xl" label="1+" variant="outline" />
-              <UBadge size="xl" label="2+" variant="outline" />
-              <UBadge size="xl" label="3+" variant="outline" />
+              <UBadge
+                size="xl"
+                label="1"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="2"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="3+"
+                variant="outline"
+                class="dark:text-muted"
+              />
             </div>
           </div>
           <div>
             <p class="text-sm font-semibold mb-2">Posição do Sol</p>
             <div class="flex gap-2 flex-wrap">
-              <UBadge size="xl" label="Sol da manhã" variant="outline" />
-              <UBadge size="xl" label="Sol da tarde" variant="outline" />
+              <UBadge
+                size="xl"
+                label="Sol da manhã"
+                variant="outline"
+                class="dark:text-muted"
+              />
+              <UBadge
+                size="xl"
+                label="Sol da tarde"
+                variant="outline"
+                class="dark:text-muted"
+              />
             </div>
           </div>
 
