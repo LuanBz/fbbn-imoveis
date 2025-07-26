@@ -73,7 +73,7 @@ builder.Services.AddAuthorization();
 // AWS
 builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddAWSService<IAmazonDynamoDB>();
-builder.Services.AddScoped<IDynamoDBContext, DynamoDBContext>();
+builder.Services.AddScoped<DynamoDBContext>();
 builder.Services.AddDefaultAWSOptions(new AWSOptions
 {
     Region = RegionEndpoint.SAEast1,
