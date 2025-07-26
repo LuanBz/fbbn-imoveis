@@ -4,13 +4,11 @@ import { NuxtImg } from "#components";
 
 <template>
   <NuxtLink to="/map">
-    <div
-      class="relative flex bg-white rounded-2xl shadow-md overflow-hidden h-full"
-    >
+    <div class="relative flex rounded-2xl shadow-md overflow-hidden h-full">
       <div
-        class="bg-[#142F3F] w-[40%] text-white p-4 flex-shrink-0 flex items-center"
+        class="bg-accented dark:bg-[#142F3F] w-[40%] text-white p-4 flex-shrink-0 flex items-center"
       >
-        <p class="font-bold text-md">
+        <p class="font-bold text-md text-tertiary dark:text-inverted">
           Navegue pelo mapa e encontre seu próximo imóvel!
         </p>
       </div>

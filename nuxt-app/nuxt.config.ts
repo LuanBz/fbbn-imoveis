@@ -11,6 +11,7 @@ export default defineNuxtConfig({
         "primary",
         "secondary",
         "tertiary",
+        "clean",
         "info",
         "success",
         "warning",

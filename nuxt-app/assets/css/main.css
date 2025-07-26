@@ -5,6 +5,7 @@
   --ui-primary: #142f3f;
   --ui-secondary: #c0730f;
   --ui-tertiary: #245f7a;
+  --ui-clean: #effafc;
 
   --ui-text-dimmed: var(--ui-color-neutral-400);
   --ui-text-muted: var(--ui-color-neutral-500);
@@ -16,7 +17,7 @@
   --ui-bg: #effafc;
   --ui-bg-muted: var(--ui-color-neutral-50);
   --ui-bg-elevated: var(--ui-color-neutral-100);
-  --ui-bg-accented: var(--ui-color-neutral-200);
+  --ui-bg-accented: #effafc;
   --ui-bg-inverted: var(--ui-color-neutral-900);
 
   --ui-border: var(--ui-color-neutral-200);
