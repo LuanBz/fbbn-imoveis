@@ -11,7 +11,7 @@
         public string? Estado { get; set; }
         public string? CEP { get; set; }
         public string? Status { get; set; }
-        public string? Tags { get; set; }
+        public List<string?> Tags { get; set; } = [];
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public decimal? Preco { get; set; }

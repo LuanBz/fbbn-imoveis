@@ -44,6 +44,21 @@ namespace fbbn.API.Repositories
 
             return search.ToList();
         }
+        public async Task<Imovel?> GetByTagAsync(string tags)
+        {
+            var conditions = new List<ScanCondition>
+            {
+                new ScanCondition("Tags", ScanOperator.Contains, tags)
+            };
+
+            var search = await _context.ScanAsync<Imovel>(conditions).GetNextSetAsync();
+
+            if (!search.Any())
+            {
+                throw new Exception($"Não foi encontrado imóveis com a tag {tags}.");
+            }
+            return search.FirstOrDefault();
+        }
         public async Task<Imovel?> UpdateAsync(Imovel imovel)
         {
             var existingImovel = await _context.LoadAsync<Imovel>(imovel.imovelId);
