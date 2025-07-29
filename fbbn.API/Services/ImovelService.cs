@@ -52,6 +52,11 @@ namespace fbbn.API.Services
             var imovel = await _imovelRepository.GetByBairroAsync(bairro) ?? throw new KeyNotFoundException($"Imóvel no bairro {bairro} não encontrado.");
             return imovel;
         }
+        public async Task<Imovel> GetImovelByTagAsync(string tag)
+        {
+            var imovel = await _imovelRepository.GetByTagAsync(tag) ?? throw new KeyNotFoundException($"Imóvel com a tag {tag} não encontrado.");
+            return imovel;
+        }
         public async Task<Imovel> UpdateImovelAsync(string id, ImovelUpdateDTO dto)
         {
             var imovel = await _imovelRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"Imóvel com ID {id} não encontrado.");

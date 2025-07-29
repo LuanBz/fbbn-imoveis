@@ -13,7 +13,7 @@
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string? Status { get; set; }
-        public string? Tags { get; set; }
+        public List<string?> Tags { get; set; } = [];
         public decimal Preco { get; set; }
         public decimal Precom2 { get; set; }
         public string? DataLancamento { get; set; }

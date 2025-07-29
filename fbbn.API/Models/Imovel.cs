@@ -20,7 +20,7 @@ namespace fbbn.API.Models
         [DynamoDBProperty] public double? Latitude { get; set; }
         [DynamoDBProperty] public double? Longitude { get; set; }
         [DynamoDBProperty] public string? Status { get; set; }
-        [DynamoDBProperty] public string? Tags { get; set; }
+        [DynamoDBProperty] public List<string?> Tags { get; set; } = [];
         #endregion
 
         #region Price Attributes
@@ -56,7 +56,7 @@ namespace fbbn.API.Models
             CEP = string.Empty;
             Tipo = string.Empty;
         }
-        public Imovel(string Nome, string Descricao, string Endereco, string Bairro, string Cidade, string Estado, string CEP, double? Latitude, double? Longitude, string? Status, string? Tags, decimal Preco, decimal Precom2, string? DataLancamento, string? Tipo, double AreaTotal, double AreaConstruida, string? Metragem, string? Quartos, string? Banheiros, string? VagasGaragem, string? posicaoSol)
+        public Imovel(string Nome, string Descricao, string Endereco, string Bairro, string Cidade, string Estado, string CEP, double? Latitude, double? Longitude, string? Status, List<string?> Tags, decimal Preco, decimal Precom2, string? DataLancamento, string? Tipo, double AreaTotal, double AreaConstruida, string? Metragem, string? Quartos, string? Banheiros, string? VagasGaragem, string? posicaoSol)
         {
             imovelId = Guid.NewGuid().ToString();
             this.Nome = Nome ?? throw new ArgumentNullException(nameof(Nome));
