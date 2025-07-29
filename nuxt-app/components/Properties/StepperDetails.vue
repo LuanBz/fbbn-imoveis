@@ -26,5 +26,12 @@ const items = ref<StepperItem[]>([
 </script>
 
 <template>
-  <UStepper :items="items" size="lg" orientation="vertical" class="w-full" />
+  <UStepper
+    disabled
+    :items="items"
+    size="lg"
+    orientation="vertical"
+    class="w-full"
+    color="secondary"
+  />
 </template>

@@ -43,7 +43,7 @@ const items = [
       loop
       dots
       :ui="{
-        dot: 'data-[state=active]:bg-secondary',
+        dot: 'data-[state=active]:bg-secondary bg-inverted',
       }"
       :autoplay="{ delay: 10000 }"
       class="w-full max-w-dvw mx-auto mb-8"

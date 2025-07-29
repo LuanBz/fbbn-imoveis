@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
 :root {
   --ui-primary: #142f3f;
   --ui-secondary: #c0730f;
@@ -17,7 +25,7 @@
   --ui-bg: #effafc;
   --ui-bg-muted: var(--ui-color-neutral-50);
   --ui-bg-elevated: var(--ui-color-neutral-100);
-  --ui-bg-accented: #effafc;
+  --ui-bg-accented: var(--ui-color-neutral-500)
   --ui-bg-inverted: var(--ui-color-neutral-900);
 
   --ui-border: var(--ui-color-neutral-200);

@@ -14,7 +14,6 @@ const valueArea = ref([1, 20000]);
     >
       <UButton
         trailing-icon="mdi:filter-multiple"
-        label="Filtros"
         color="secondary"
         variant="solid"
         size="xl"
@@ -208,48 +207,48 @@ const valueArea = ref([1, 20000]);
         </div>
       </template>
     </USlideover>
-    <div class="overflow-x-auto flex flex-row gap-2">
+    <div class="overflow-x-auto scrollbar-hide flex flex-row gap-2">
       <UButton
         label="Mais recentes"
         color="neutral"
-        variant="soft"
+        variant="outline"
         size="xl"
-        class="border-1 border-primary inline-block rounded-full"
+        class="inline-block rounded-xl"
       />
       <UButton
         label="Venda"
         color="neutral"
-        variant="soft"
+        variant="outline"
         size="xl"
-        class="border-1 border-primary inline-block rounded-full"
+        class="inline-block rounded-xl"
       />
       <UButton
         label="Aluguel"
         color="neutral"
-        variant="soft"
+        variant="outline"
         size="xl"
-        class="border-1 border-primary inline-block rounded-full"
+        class="inline-block rounded-xl"
       />
       <UButton
         label="Apartamento"
         color="neutral"
-        variant="soft"
+        variant="outline"
         size="xl"
-        class="border-1 border-primary inline-block rounded-full"
+        class="inline-block rounded-xl"
       />
       <UButton
         label="Lançamento"
         color="neutral"
-        variant="soft"
+        variant="outline"
         size="xl"
-        class="border-1 border-primary inline-block rounded-full"
+        class="inline-block rounded-xl"
       />
       <UButton
         label="Sol da manhã"
         color="neutral"
-        variant="soft"
+        variant="outline"
         size="xl"
-        class="border-1 border-primary inline-block rounded-full"
+        class="inline-block rounded-xl"
       />
     </div>
   </div>

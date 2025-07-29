@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 
+const items = [
+  "https://picsum.photos/640/640?random=1",
+  "https://picsum.photos/640/640?random=2",
+  "https://picsum.photos/640/640?random=3",
+  "https://picsum.photos/640/640?random=4",
+  "https://picsum.photos/640/640?random=5",
+  "https://picsum.photos/640/640?random=6",
+];
+
 const bairroSelecionado = ref("Ipanema");
 
 const imoveis = ref([
@@ -86,60 +95,88 @@ const imoveisPaginados = computed(() => {
   return imoveisFiltrados.value.slice(start, end);
 });
 </script>
-<template>
-  <div class="flex w-full flex-col"><SearchBar /> <Filters /></div>
-  <h3 class="text-xl font-bold text-gray-800 dark:text-inverted">
+<template class="relative">
+  <PromotionalBanner />
+  <div class="sticky p-5 top-0 z-10 bg-tertiary shadow-xl/20 shadow-tertiary">
+    <div class="flex justify-between gap-2">
+      <UInput
+        icon="i-lucide-search"
+        :ui="{ leadingIcon: 'text-secondary', base: 'py-4' }"
+        size="xl"
+        color="secondary"
+        class="w-full grow flex"
+        variant="outline"
+        placeholder="Pesquise um local ou característica do imóvel..."
+      />
+    </div>
+    <Filters class="h-full" />
+  </div>
+
+  <h3 class="text-xl font-bold text-gray-800 dark:text-inverted px-8 mt-8">
     Foram encontrado(s) 3 em {{ bairroSelecionado }}..
   </h3>
-  <div v-if="imoveisFiltrados.length > 0" class="flex flex-col gap-4">
+  <div v-if="imoveisFiltrados.length > 0" class="flex flex-col gap-4 px-4 mt-8">
     <div
       v-for="imovel in imoveisPaginados"
       :key="imovel.id"
-      class="overflow-hidden flex flex-row gap-5 shadow-lg rounded-2xl w-full h-60 bg-primary"
+      class="overflow-hidden flex flex-col gap-5 shadow-lg rounded-2xl w-full h-fit bg-accented border-1 border-clean dark:border-primary"
     >
-      <nuxt-img
-        src="/img/exemploG.jpg"
-        class="w-1/3 h-full object-cover"
-        alt="Imagem do imóvel"
-      />
-      <div class="flex flex-col justify-between py-8 w-2/3 gap-2">
-        <div>
-          <div class="flex items-center gap-2 text-muted">
-            <UIcon name="mdi-map-marker" />
-            <p class="truncate text-md">
-              {{ imovel.bairro }}, {{ imovel.cidade }}
+      <NuxtLink href="/properties/1">
+        <div class="relative">
+          <UCarousel
+            v-slot="{ item }"
+            :items="items"
+            :ui="{
+              container: 'm-0 w-full ',
+              item: 'p-0 w-full ',
+            }"
+            class="w-full"
+          >
+            <img :src="item" width="100%" height="350px" />
+          </UCarousel>
+          <UBadge class="absolute top-4 left-4">Oportunidade</UBadge>
+        </div>
+
+        <div class="flex flex-col justify-between px-8 pb-8 gap-2 mt-4">
+          <div>
+            <div class="flex items-center gap-2 text-muted">
+              <UIcon name="mdi-map-marker" />
+              <p class="truncate text-md">
+                {{ imovel.bairro }}, {{ imovel.cidade }}
+              </p>
+            </div>
+
+            <p
+              class="font-extrabold text-primary dark:text-inverted text-xl uppercase overflow-hidden text-ellipsis h-14 w-4/5"
+            >
+              {{ imovel.nome }}
             </p>
           </div>
+          <div>
+            <p class="text-3xl text-secondary dark:text-warning-600 font-bold">
+              {{ formatarPreco(imovel.preco) }}
+            </p>
+            <div class="flex flex-row gap-2 mt-2 justify-end">
+              <div
+                class="grow items-end flex flex-row text-tertiary dark:text-inverted gap-3"
+              >
+                <div class="flex flex-row gap-1">
+                  <p class="text-md font-bold">{{ imovel.quartos }}</p>
+                  <UIcon name="mdi:bed" class="size-6" />
+                </div>
 
-          <p
-            class="font-extrabold text-white text-xl uppercase overflow-hidden text-ellipsis h-14 w-4/5"
-          >
-            {{ imovel.nome }}
-          </p>
-        </div>
-        <div>
-          <p class="text-3xl text-inverted">
-            {{ formatarPreco(imovel.preco) }}
-          </p>
-          <div class="flex flex-row gap-2 mt-2 justify-end">
-            <div class="grow items-end flex flex-row text-white gap-3">
-              <div class="flex flex-row gap-1">
-                <p class="text-md font-bold">{{ imovel.quartos }}</p>
-                <UIcon name="mdi:bed" class="size-6" />
-              </div>
-
-              <div class="flex flex-row gap-1">
-                <p class="text-md font-bold">{{ imovel.banheiros }}</p>
-                <UIcon name="mdi:shower-head" class="size-6" />
-              </div>
-              <div class="flex flex-row gap-1">
-                <p class="text-md font-bold">{{ imovel.vagas }}</p>
-                <UIcon name="mdi:car" class="size-6" />
+                <div class="flex flex-row gap-1">
+                  <p class="text-md font-bold">{{ imovel.banheiros }}</p>
+                  <UIcon name="mdi:shower-head" class="size-6" />
+                </div>
+                <div class="flex flex-row gap-1">
+                  <p class="text-md font-bold">{{ imovel.vagas }}</p>
+                  <UIcon name="mdi:car" class="size-6" />
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </div></div
+      ></NuxtLink>
     </div>
   </div>
   <div v-else class="text-center py-10 px-6 bg-white rounded-lg shadow-md">
@@ -150,7 +187,6 @@ const imoveisPaginados = computed(() => {
       Tente selecionar outro bairro ou ajustar sua busca.
     </p>
   </div>
-  <PromotionalBanner />
   <UPagination
     v-model:page="page"
     :items-per-page="itemsPerPage"
@@ -158,7 +194,7 @@ const imoveisPaginados = computed(() => {
     active-color="secondary"
     variant="outline"
     size="xl"
-    class="place-self-center"
+    class="place-self-center mt-8"
   />
 
   <div class="flex justify-center mt-8 space-x-2"></div>

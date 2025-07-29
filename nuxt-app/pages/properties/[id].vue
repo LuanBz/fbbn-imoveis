@@ -7,8 +7,8 @@ const id = route.params.id;
 // Simulando a propriedade (você pode substituir por fetch ou useAsyncData)
 const property = ref({
   id,
-  title: "Almar Ipanema",
-  district: "Barra da Tijuca",
+  title: "Alma Ipanema Exclusive Studios",
+  district: "Ipanema",
   price: 1214111.0,
   m2: 14200,
   location: { lat: -23.55052, lng: -46.633308 },
@@ -35,56 +35,81 @@ const mapSrc = computed(
 </script>
 
 <template>
-  <SearchBar />
-  <PromotionalBanner />
-  <PropertiesImageCarousel />
+  <div class="static">
+    <div class="w-full flex flex-row gap-2 p-2 z-50 fixed bottom-0 bg-tertiary">
+      <UButton
+        variant="soft"
+        class="justify-center bg-primary text-white w-full h-14 rounded-lg"
+      >
+        Peça mais informações
+      </UButton>
+      <UButton
+        variant="soft"
+        class="justify-center bg-[#C0730F] text-white w-full h-14 rounded-lg"
+      >
+        Marque uma visita!
+      </UButton>
+    </div>
+    <PromotionalBanner />
+    <div class="p-4">
+      <UInput
+        icon="i-lucide-search"
+        :ui="{ leadingIcon: 'text-secondary', base: 'py-4' }"
+        size="xl"
+        color="secondary"
+        class="w-full grow flex"
+        variant="outline"
+        placeholder="Pesquise outro imóvel do seu interesse
+        "
+      />
+    </div>
+  </div>
 
-  <div class="flex flex-row gap-4">
+  <PropertiesImageCarousel class="px-8" />
+  <div class="flex gap-2 mt-8 px-11">
+    <UBadge color="tertiary">Abaixo do mercado</UBadge
+    ><UBadge>Oportunidade</UBadge>
+  </div>
+  <div class="flex flex-row gap-4 px-11 mt-4 mb-8">
     <div class="flex-col flex gap-4">
       <div>
-        <p class="font-bold">{{ property.district }}</p>
+        <div class="flex items-center gap-1">
+          <UIcon name="mdi:map-marker" class="size-5" />
+          <p class="font-bold">{{ property.district }}</p>
+        </div>
+
         <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase">
           {{ property.title }}
         </h2>
       </div>
+      <USeparator />
 
       <div class="flex flex-col gap-2">
-        <div class="flex gap-2">
-          <UBadge color="tertiary">Abaixo do mercado</UBadge
-          ><UBadge>Oportunidade</UBadge>
+        <div class="flex items-baseline justify-between p-2">
+          <h1 class="font-medium">A partir de</h1>
+          <h2
+            class="font-extrabold text-primary dark:text-[#F0F0F0] text-3xl uppercase"
+          >
+            R$
+            {{
+              property.price.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+              })
+            }}
+          </h2>
         </div>
-        <h2
-          class="font-extrabold text-primary dark:text-[#F0F0F0] text-3xl uppercase"
+        <div
+          class="flex items-baseline justify-between p-2 gap-1 rounded-lg bg-white dark:bg-primary"
         >
-          R$
-          {{
-            property.price.toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-            })
-          }}
-        </h2>
-        <h3>
-          Preço por m² :
-          {{
-            property.m2.toLocaleString("pt-BR", { minimumFractionDigits: 2 })
-          }}
-        </h3>
+          <h1 class="font-medium dark:text-inverted">Preço por m²</h1>
+          <h3 class="font-bold dark:text-inverted">
+            ~R${{
+              property.m2.toLocaleString("pt-BR", { minimumFractionDigits: 2 })
+            }}
+          </h3>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="flex flex-col gap-2">
-    <UButton
-      variant="soft"
-      class="justify-center bg-[#C0730F] text-white w-full h-15 rounded-lg"
-    >
-      Marque uma visita!
-    </UButton>
-    <UButton
-      variant="soft"
-      class="justify-center bg-primary text-white w-full h-15 rounded-lg"
-    >
-      Peça mais informações
-    </UButton>
   </div>
 
   <iframe
@@ -96,15 +121,10 @@ const mapSrc = computed(
     referrerpolicy="no-referrer-when-downgrade"
   ></iframe>
 
-  <div class="flex flex-col gap-4">
-    <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase">Status</h2>
-    <StepperDetails />
-  </div>
-
-  <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase">
+  <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase px-8 mt-8">
     Ficha Técnica
   </h2>
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-2 px-8 mt-4">
     <div class="flex flex-row gap-2">
       <UCard variant="solid" class="bg-[#F0F0F0] dark:bg-primary w-1/3">
         <div class="flex flex-col items-center justify-center gap-2">
@@ -151,7 +171,7 @@ const mapSrc = computed(
       </div>
       <div class="flex justify-center gap-2 w-1/3">
         <UIcon name="mdi:shower-head" class="text-[#c0730f] size-6" />
-        <p class="font-medium text-primary dark:text-[#F0F0F0]">
+        <p class="font-medium text-primary truncate dark:text-[#F0F0F0]">
           {{ property.features.bathrooms }} Banheiros
         </p>
       </div>
@@ -204,21 +224,13 @@ const mapSrc = computed(
     </div>
   </div>
 
-  <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase">Descrição</h2>
-  <p>{{ property.description }}</p>
-  <PropertiesMap />
-  <div class="flex flex-col gap-2">
-    <UButton
-      variant="soft"
-      class="justify-center bg-[#C0730F] text-white w-full h-15 rounded-lg"
-    >
-      Marque uma visita!
-    </UButton>
-    <UButton
-      variant="soft"
-      class="justify-center bg-primary text-white w-full h-15 rounded-lg"
-    >
-      Peça mais informações
-    </UButton>
+  <div class="flex flex-col gap-4 px-8 mt-8">
+    <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase">Status</h2>
+    <StepperDetails />
   </div>
+
+  <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase px-8 mt-8">
+    Descrição
+  </h2>
+  <p class="px-8 mt-4">{{ property.description }}</p>
 </template>

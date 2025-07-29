@@ -4,7 +4,7 @@
       class="relative h-[50dvh] bg-[url(/img/exemploG.jpg)] bg-cover bg-local flex items-end justify-end"
     >
       <div
-        class="absolute z-10 -rotate-45 top-22 -left-22 bg-secondary dark:bg-tertiary text-white font-bold py-2 px-30 shadow-lg text-lg"
+        class="absolute z-0 -rotate-45 top-22 -left-22 bg-secondary dark:bg-tertiary text-white font-bold py-2 px-30 shadow-lg text-lg"
       >
         LANÇAMENTO
       </div>
@@ -46,7 +46,7 @@
           </div>
         </div>
         <UButton
-          class="rounded-full bg-accented dark:bg-secondary"
+          class="rounded-full bg-clean dark:bg-secondary"
           size="xl"
           :icon="showDetails ? 'mdi:eye-off' : 'mdi:eye'"
           :ui="{ leadingIcon: 'text-secondary dark:text-inverted' }"
@@ -56,7 +56,7 @@
     </div>
 
     <div class="min-h-[50dvh] mb-8 bg-tertiary">
-      <div class="mx-4 mt-8 p-4 bg-accented dark:bg-primary rounded-full">
+      <div class="mx-4 mt-8 p-4 bg-clean dark:bg-primary rounded-full">
         <UInput
           icon="i-lucide-search"
           size="xl"
