@@ -1,6 +1,7 @@
 import axios from "axios";
-import { API_BASE_URL } from "./AuthAPI";
 import type { Imovel } from "~/models/imovel";
+
+const API_BASE_URL = useRuntimeConfig().public.apiBaseUrl;
 
 export async function createItem(imovel: Imovel) {
     try {
@@ -11,8 +12,6 @@ export async function createItem(imovel: Imovel) {
         throw error;
     }
 }
-
-// CREATE PRIMEIRO E DEPOIS O UPLOAD DE IMAGENS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 export async function uploadImages(itemId: string, images: File[]) {
     try {

@@ -1,5 +1,6 @@
-import { API_BASE_URL } from "./AuthAPI";
 import axios from "axios";
+
+const API_BASE_URL = useRuntimeConfig().public.apiBaseUrl;
 
 export async function deleteItem(itemId: string) {
     try {

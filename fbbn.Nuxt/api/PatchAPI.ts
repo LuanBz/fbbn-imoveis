@@ -1,6 +1,7 @@
 import axios from "axios";
-import { API_BASE_URL } from "./AuthAPI";
 import type { Imovel } from "~/models/imovel";
+
+const API_BASE_URL = useRuntimeConfig().public.apiBaseUrl;
 
 export async function patchItem(itemId: string, imovel: Imovel) {
     try {
