@@ -1,13 +1,30 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { Imovel } from "~/models/imovel";
+
+defineProps({
+  imovel: {
+    type: Object as () => Imovel,
+    required: true,
+  },
+});
+</script>
+
 <template>
-  <NuxtLink href="/properties/1" class="bg-[#142F3F] w-full h-20 flex flex-row">
+  <NuxtLink
+    :to="`/properties/${imovel.imovelId}`"
+    class="bg-[#142F3F] w-full h-20 flex flex-row"
+  >
     <div class="w-2/3 flex flex-col text-center justify-center p-4">
-      <h5 class="text-white font-extrabold">NOVIDADE EM IPANEMA</h5>
-      <h2 class="text-[#C0730F] font-extrabold text-2xl">ALMA IPANEMA</h2>
+      <h5 class="text-white font-extrabold truncate">
+        NOVIDADE EM {{ imovel.bairro.toLocaleUpperCase() }}
+      </h5>
+      <h2 class="text-[#C0730F] font-extrabold text-2xl truncate">
+        {{ imovel.nome.toLocaleUpperCase() }}
+      </h2>
     </div>
     <div class="w-1/3 overflow-hidden">
       <nuxt-img
-        src="/img/exemploG.jpg"
+        :src="imovel.imagens?.[0]"
         class="w-full h-full object-cover"
         alt="Imagem do Empreendimento"
       />

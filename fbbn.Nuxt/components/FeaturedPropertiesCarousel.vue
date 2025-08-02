@@ -1,35 +1,13 @@
 <script setup lang="ts">
 import FeaturedPropertiesCard from "~/components/FeaturedPropertiesCard.vue";
+import type { Imovel } from "~/models/imovel";
 
-const items = [
-  {
-    id: 1,
-    image: "/img/exemploG.jpg",
-    price: "R$1.500.000",
-    locale: "Barra da Tijuca",
+defineProps({
+  imoveis: {
+    type: Array as () => Imovel[],
+    required: true,
   },
-  {
-    id: 2,
-
-    image: "/img/exemploG.jpg",
-    price: "R$2.500.000",
-    locale: "Copacabana",
-  },
-  {
-    id: 3,
-
-    image: "/img/exemploG.jpg",
-    price: "R$1.200.000",
-    locale: "Ipanema",
-  },
-  {
-    id: 5,
-
-    image: "/img/exemploG.jpg",
-    price: "R$3.000.000",
-    locale: "Leblon",
-  },
-];
+});
 </script>
 
 <template>
@@ -39,11 +17,11 @@ const items = [
   <div>
     <UCarousel
       v-slot="{ item }"
-      :items="items"
+      :items="imoveis"
       class="w-full"
       :ui="{ item: 'basis-auto' }"
     >
-      <FeaturedPropertiesCard :item="item" />
+      <FeaturedPropertiesCard :imovel="item" />
     </UCarousel>
   </div>
 </template>

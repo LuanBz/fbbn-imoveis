@@ -1,105 +1,175 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { GetAllItems } from "~/api/GetAPI";
+import type { Filtros } from "~/models/filtros";
+import type { Imovel } from "~/models/imovel";
+import { parseInterval } from "~/utils/parseIntervals";
 
-const items = [
-  "https://picsum.photos/640/640?random=1",
-  "https://picsum.photos/640/640?random=2",
-  "https://picsum.photos/640/640?random=3",
-  "https://picsum.photos/640/640?random=4",
-  "https://picsum.photos/640/640?random=5",
-  "https://picsum.photos/640/640?random=6",
-];
+const { data: imoveis } = await useAsyncData<Imovel[]>(() => GetAllItems());
 
-const bairroSelecionado = ref("Ipanema");
-
-const imoveis = ref([
-  {
-    id: 1,
-    nome: "ALMAR IPANEMA RESIDENCE FULL SERVICE",
-    bairro: "Ipanema",
-    cidade: "Rio de Janeiro",
-    preco: 1120000,
-    quartos: 1,
-    banheiros: 2,
-    vagas: 3,
-    imagem: "https://i.imgur.com/yv9Gv9E.jpeg",
-  },
-  {
-    id: 2,
-    nome: "IPANEMA BEACH RESIDENCE SERVICEBAR",
-    bairro: "Ipanema",
-    cidade: "Rio de Janeiro",
-    preco: 1350000,
-    quartos: 2,
-    banheiros: 2,
-    vagas: 1,
-    imagem: "https://i.imgur.com/yv9Gv9E.jpeg",
-  },
-  {
-    id: 3,
-    nome: "OCEANFRONT BARRA",
-    bairro: "Barra da Tijuca",
-    cidade: "Rio de Janeiro",
-    preco: 1800000,
-    quartos: 3,
-    banheiros: 3,
-    vagas: 2,
-    imagem: "https://i.imgur.com/yv9Gv9E.jpeg",
-  },
-  {
-    id: 4,
-    nome: "ATLÂNTICO SUL",
-    bairro: "Barra da Tijuca",
-    cidade: "Rio de Janeiro",
-    preco: 980000,
-    quartos: 2,
-    banheiros: 1,
-    vagas: 1,
-    imagem: "https://i.imgur.com/yv9Gv9E.jpeg",
-  },
-  {
-    id: 5,
-    nome: "VISTA MAR IPANEMA",
-    bairro: "Ipanema",
-    cidade: "Rio de Janeiro",
-    preco: 2500000,
-    quartos: 3,
-    banheiros: 4,
-    vagas: 3,
-    imagem: "https://i.imgur.com/yv9Gv9E.jpeg",
-  },
-]);
+const local = localState();
 
 const imoveisFiltrados = computed(() => {
-  if (!bairroSelecionado.value) {
-    return imoveis.value;
+  if (!imoveis.value) return [];
+
+  let filtrados = imoveis.value;
+
+  if (local.value && local.value.length > 0) {
+    filtrados = filtrados.filter((imovel) =>
+      local.value.includes(imovel.bairro)
+    );
   }
-  return imoveis.value.filter(
-    (imovel) => imovel.bairro === bairroSelecionado.value
+
+  // Filtro por termo de busca (nome, bairro, cidade, estado)
+  if (termoBusca.value.trim().length > 0) {
+    const termo = termoBusca.value.toLowerCase();
+    filtrados = filtrados.filter((imovel) =>
+      [
+        imovel.nome,
+        imovel.bairro,
+        imovel.cidade,
+        imovel.estado,
+        imovel.metragem,
+        imovel.tipo,
+      ].some((campo) => campo.toLowerCase().includes(termo))
+    );
+  }
+
+  // Filtro por tags rápidas
+  if (filtros.value.filtrosRapidos?.tagsSelecionadas.length > 0) {
+    filtrados = filtrados.filter((imovel) =>
+      filtros.value.filtrosRapidos.tagsSelecionadas.some((tag) =>
+        imovel.tags.includes(tag)
+      )
+    );
+  }
+
+  // Aplica os filtros existentes
+  filtrados = filtrados.filter((imovel) =>
+    aplicarFiltros(imovel, filtros.value)
   );
+
+  // Ordenar por data se necessário
+  if (filtros.value.filtrosRapidos?.ordenacao === "recentes") {
+    filtrados.sort(
+      (a, b) =>
+        new Date(b.dataCadastro).getTime() - new Date(a.dataCadastro).getTime()
+    );
+  }
+
+  return filtrados.filter((imovel) => aplicarFiltros(imovel, filtros.value));
 });
 
-const formatarPreco = (valor: number): string => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-  }).format(valor);
-};
+function aplicarFiltros(imovel: Imovel, filtros: Filtros) {
+  // Filtro por tipo
+  if (
+    filtros.tipo.length > 0 &&
+    !filtros.tipo.some((t) =>
+      imovel.tipo.toLowerCase().includes(t.toLowerCase())
+    )
+  )
+    return false;
+
+  // Filtro por preço
+  if (filtros.precoMin !== null && imovel.preco < filtros.precoMin)
+    return false;
+  if (filtros.precoMax !== null && imovel.preco > filtros.precoMax)
+    return false;
+
+  // Filtro por metragem (área)
+  const [minMetragem, maxMetragem] = parseMeters(imovel.metragem);
+  const areaMin = filtros.areaMin;
+  const areaMax = filtros.areaMax;
+
+  if (
+    (areaMin !== null && maxMetragem < areaMin) ||
+    (areaMax !== null && minMetragem > areaMax)
+  )
+    return false;
+
+  // Filtro por quartos, banheiros, vagas (com "2 a 4", etc)
+  if (
+    filtros.quartos.length > 0 &&
+    !filtros.quartos.some((q) => parseInterval(q, imovel.quartos))
+  )
+    return false;
+
+  if (
+    filtros.banheiros.length > 0 &&
+    !filtros.banheiros.some((b) => parseInterval(b, imovel.banheiros))
+  )
+    return false;
+
+  if (
+    filtros.vagas.length > 0 &&
+    !filtros.vagas.some((v) => parseInterval(v, imovel.vagasGaragem))
+  )
+    return false;
+
+  // Filtro por posição do sol
+  if (
+    filtros.sol.length > 0 &&
+    !filtros.sol.includes(String(imovel.posicaoSol))
+  )
+    return false;
+
+  return true;
+}
 
 const page = ref(1);
-const itemsPerPage = ref(2);
+const itemsPerPage = ref(4);
 const imoveisPaginados = computed(() => {
   const start = (page.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
   return imoveisFiltrados.value.slice(start, end);
 });
+
+const { data: novidade } = await useNovidade();
+
+const textoFiltro = computed(() => {
+  if (!local.value || local.value.length === 0) return "todos os bairros";
+
+  if (local.value.length === 1) return local.value[0];
+
+  return `${local.value[0]} e mais ${local.value.length - 1}`;
+});
+
+const filtros = ref<
+  Filtros & {
+    filtrosRapidos: {
+      ordenacao: "recentes" | null;
+      tagsSelecionadas: string[];
+    };
+  }
+>({
+  tipo: [],
+  precoMin: null,
+  precoMax: null,
+  precoM2Min: null,
+  precoM2Max: null,
+  areaMin: null,
+  areaMax: null,
+  quartos: [],
+  banheiros: [],
+  vagas: [],
+  sol: [],
+  filtrosRapidos: {
+    ordenacao: null,
+    tagsSelecionadas: [],
+  },
+});
+function atualizarFiltros(novosFiltros: Filtros) {
+  filtros.value = { ...novosFiltros };
+}
+const termoBusca = ref("");
 </script>
+
 <template class="relative">
-  <PromotionalBanner />
+  <PromotionalBanner v-if="novidade" :imovel="novidade" />
   <div class="sticky p-5 top-0 z-10 bg-tertiary shadow-xl/20 shadow-tertiary">
     <div class="flex justify-between gap-2">
       <UInput
+        v-model="termoBusca"
         icon="i-lucide-search"
         :ui="{ leadingIcon: 'text-secondary', base: 'py-4' }"
         size="xl"
@@ -109,32 +179,49 @@ const imoveisPaginados = computed(() => {
         placeholder="Pesquise um local ou característica do imóvel..."
       />
     </div>
-    <Filters class="h-full" />
+    <Filters
+      class="h-full"
+      v-if="imoveis"
+      :imoveis="imoveis"
+      :filtros="filtros"
+      @update:filtros="atualizarFiltros"
+      @reset:filtros="atualizarFiltros"
+    />
   </div>
 
   <h3 class="text-xl font-bold text-gray-800 dark:text-inverted px-8 mt-8">
-    Foram encontrado(s) 3 em {{ bairroSelecionado }}..
+    Foram encontrado(s) {{ imoveisFiltrados.length }} imóvel(is) em
+    {{ textoFiltro }}.
   </h3>
+
   <div v-if="imoveisFiltrados.length > 0" class="flex flex-col gap-4 px-4 mt-8">
     <div
       v-for="imovel in imoveisPaginados"
-      :key="imovel.id"
+      :key="imovel.imovelId"
       class="overflow-hidden flex flex-col gap-5 shadow-lg rounded-2xl w-full h-fit bg-accented border-1 border-clean dark:border-primary"
     >
-      <NuxtLink href="/properties/1">
+      <NuxtLink :href="`/properties/${imovel.imovelId}`">
         <div class="relative">
           <UCarousel
             v-slot="{ item }"
-            :items="items"
+            :items="imovel.imagens"
             :ui="{
-              container: 'm-0 w-full ',
-              item: 'p-0 w-full ',
+              container: 'm-0 w-full',
+              item: 'p-0 w-full',
             }"
             class="w-full"
           >
-            <img :src="item" width="100%" height="350px" />
+            <img :src="item" class="w-full h-80 object-cover" />
           </UCarousel>
-          <UBadge class="absolute top-4 left-4">Oportunidade</UBadge>
+          <div class="absolute top-4 right-4 flex gap-2 items-end">
+            <UBadge
+              v-for="tag in imovel.tags"
+              :key="tag"
+              class="bg-secondary text-white"
+            >
+              {{ tag }}
+            </UBadge>
+          </div>
         </div>
 
         <div class="flex flex-col justify-between px-8 pb-8 gap-2 mt-4">
@@ -147,14 +234,14 @@ const imoveisPaginados = computed(() => {
             </div>
 
             <p
-              class="font-extrabold text-primary dark:text-inverted text-xl uppercase overflow-hidden text-ellipsis h-14 w-4/5"
+              class="font-extrabold text-primary dark:text-inverted text-xl uppercase overflow-hidden text-ellipsis w-4/5"
             >
               {{ imovel.nome }}
             </p>
           </div>
           <div>
             <p class="text-3xl text-secondary dark:text-warning-600 font-bold">
-              {{ formatarPreco(imovel.preco) }}
+              R${{ formatPrice(imovel.preco) }}
             </p>
             <div class="flex flex-row gap-2 mt-2 justify-end">
               <div
@@ -170,13 +257,14 @@ const imoveisPaginados = computed(() => {
                   <UIcon name="mdi:shower-head" class="size-6" />
                 </div>
                 <div class="flex flex-row gap-1">
-                  <p class="text-md font-bold">{{ imovel.vagas }}</p>
+                  <p class="text-md font-bold">{{ imovel.vagasGaragem }}</p>
                   <UIcon name="mdi:car" class="size-6" />
                 </div>
               </div>
             </div>
-          </div></div
-      ></NuxtLink>
+          </div>
+        </div>
+      </NuxtLink>
     </div>
   </div>
   <div v-else class="text-center py-10 px-6 bg-white rounded-lg shadow-md">

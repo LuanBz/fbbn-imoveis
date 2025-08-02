@@ -55,11 +55,11 @@ defineProps({
           <UIcon name="mdi:ruler-square" class="size-6" />
         </div>
       </div>
-      <div class="flex flex-row col-span-3 gap-2 mt-4">
+      <div class="flex flex-row col-span-3 gap-2 mt-2">
         <UButton color="tertiary" variant="solid" class="w-50 justify-center"
           >Agende sua visita</UButton
         >
-        <NuxtLink to="/properties/{{ item.id }}" class="w-50">
+        <NuxtLink :to="`/properties/${imovel.imovelId}`" class="w-50">
           <UButton
             trailing-icon="i-lucide-arrow-right"
             color="secondary"

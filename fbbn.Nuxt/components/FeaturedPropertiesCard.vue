@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { Imovel } from "~/models/imovel";
+
 defineProps({
-  item: {
-    type: Object,
+  imovel: {
+    type: Object as () => Imovel,
     required: true,
   },
 });
@@ -15,31 +17,29 @@ defineProps({
     class="w-50 hauto bg-primary"
   >
     <nuxt-img
-      v-if="item.image"
-      :src="item.image"
+      v-if="imovel.imagens"
+      :src="imovel.imagens[0]"
       alt="Foto da propriedade"
       format="webp"
-      class="w-full h-1/3 object-cover"
+      class="w-full h-[200px] object-cover rounded-t-xl"
     />
 
     <div class="flex flex-col grow p-4 w-full h-2/3 gap-y-4">
       <div class="flex flex-row gap-1 justify-start h-fit">
-        <UBadge label="Venda" variant="solid" color="tertiary" class="w-fit" />
-        <UBadge
-          label="Aluguel"
-          variant="solid"
-          color="tertiary"
-          class="w-fit"
-        />
+        <UBadge variant="solid" color="tertiary" class="w-fit">{{
+          imovel.tags[0]
+        }}</UBadge>
       </div>
       <div>
-        <p class="text-2xl text-left font-bold text-white">{{ item.price }}</p>
+        <p class="text-2xl text-left font-bold text-white">
+          R${{ formatPrice(imovel.preco) }}
+        </p>
         <div class="flex flex-row items-center gap-2 text-muted">
           <UIcon name="mdi-map-marker" />
-          <p>Barra da Tijuca</p>
+          <p>{{ imovel.bairro }}</p>
         </div>
       </div>
-      <NuxtLink to="/properties/{{ item.id }}">
+      <NuxtLink :to="`/properties/${imovel.imovelId}`" class="w-full">
         <UButton
           color="secondary"
           icon="mdi:eye"

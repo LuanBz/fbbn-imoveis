@@ -13,7 +13,7 @@ export type Imovel = {
     tags: string[];
     preco: number;
     precom2: number;
-    dataLancamento: Date;
+    dataLancamento: string;
     tipo: string;
     areaTotal: number;
     areaConstruida: number;
@@ -23,4 +23,5 @@ export type Imovel = {
     vagasGaragem: string;
     posicaoSol: string;
     imagens: string[];
+    dataCadastro: Date;
 }

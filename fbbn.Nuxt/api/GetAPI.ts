@@ -8,7 +8,6 @@ function getApiUrl(): string {
 export async function GetAllItems(): Promise<Imovel[]> {
     try {
         const response = await axios.get(`${getApiUrl()}/imoveis`);
-        console.log("Imóveis carregados:", response.data)
         return response.data;
     } catch (error) {
         console.error("Erro ao buscar todos os imóveis:", error);

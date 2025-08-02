@@ -1,37 +1,21 @@
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
+import { GetItemById } from "~/api/GetAPI";
+import type { Imovel } from "~/models/imovel";
 import StepperDetails from "~/components/Properties/StepperDetails.vue";
+
 const route = useRoute();
-const id = route.params.id;
+const id = route.params.id as string;
 
-// Simulando a propriedade (você pode substituir por fetch ou useAsyncData)
-const property = ref({
-  id,
-  title: "Alma Ipanema Exclusive Studios",
-  district: "Ipanema",
-  price: 1214111.0,
-  m2: 14200,
-  location: { lat: -23.55052, lng: -46.633308 },
-  features: {
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 85,
-    garage: 1,
-    rooms: 1,
-    suites: 1,
-    floor: 5,
-  },
-  type: "Residencial",
-  status: "Em construção",
-  delivery: "2024",
-  description:
-    "Apartamento com vista para o mar, área de lazer completa e acabamento de alto padrão.",
+const { data: imovel } = await useAsyncData<Imovel>(() => GetItemById(id));
+const { data: novidade } = await useNovidade();
+
+const mapSrc = computed(() => {
+  if (!imovel.value?.endereco) return "";
+  const query = encodeURIComponent(imovel.value.endereco);
+  return `https://www.google.com/maps/embed/v1/place?key=AIzaSyAj4WoCauiEdeCiihMBHl8rYFLjYmI7CMk&q=${query}`;
 });
-
-const mapSrc = computed(
-  () =>
-    `https://www.google.com/maps/embed/v1/view?key=AIzaSyAj4WoCauiEdeCiihMBHl8rYFLjYmI7CMk&center=${property.value.location.lat},${property.value.location.lng}&zoom=18&maptype=roadmap`
-);
 </script>
 
 <template>
@@ -50,7 +34,7 @@ const mapSrc = computed(
         Marque uma visita!
       </UButton>
     </div>
-    <PromotionalBanner />
+    <PromotionalBanner v-if="novidade" :imovel="novidade" />
     <div class="p-4">
       <UInput
         icon="i-lucide-search"
@@ -65,21 +49,26 @@ const mapSrc = computed(
     </div>
   </div>
 
-  <PropertiesImageCarousel class="px-8" />
+  <PropertiesImageCarousel
+    class="px-8"
+    v-if="imovel?.imagens"
+    :images="imovel?.imagens"
+  />
   <div class="flex gap-2 mt-8 px-11">
-    <UBadge color="tertiary">Abaixo do mercado</UBadge
-    ><UBadge>Oportunidade</UBadge>
+    <div v-for="tags in imovel?.tags">
+      <UBadge color="tertiary">{{ tags }}</UBadge>
+    </div>
   </div>
   <div class="flex flex-row gap-4 px-11 mt-4 mb-8">
     <div class="flex-col flex gap-4">
       <div>
         <div class="flex items-center gap-1">
           <UIcon name="mdi:map-marker" class="size-5" />
-          <p class="font-bold">{{ property.district }}</p>
+          <p class="font-bold">{{ imovel?.bairro }}</p>
         </div>
 
         <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase">
-          {{ property.title }}
+          {{ imovel?.nome }}
         </h2>
       </div>
       <USeparator />
@@ -92,7 +81,7 @@ const mapSrc = computed(
           >
             R$
             {{
-              property.price.toLocaleString("pt-BR", {
+              imovel?.preco.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
               })
             }}
@@ -104,7 +93,9 @@ const mapSrc = computed(
           <h1 class="font-medium dark:text-inverted">Preço por m²</h1>
           <h3 class="font-bold dark:text-inverted">
             ~R${{
-              property.m2.toLocaleString("pt-BR", { minimumFractionDigits: 2 })
+              imovel?.precom2.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+              })
             }}
           </h3>
         </div>
@@ -133,7 +124,7 @@ const mapSrc = computed(
             class="text-primary dark:text-[#F0F0F0] size-12"
           />
           <p class="font-bold text-primary dark:text-[#F0F0F0]">
-            {{ property.type }}
+            {{ imovel?.tipo }}
           </p>
         </div>
       </UCard>
@@ -144,7 +135,7 @@ const mapSrc = computed(
             class="text-primary dark:text-[#F0F0F0] size-12"
           />
           <p class="font-bold text-primary dark:text-[#F0F0F0]">
-            {{ property.delivery }}
+            {{ imovel?.dataLancamento }}
           </p>
         </div>
       </UCard>
@@ -155,7 +146,7 @@ const mapSrc = computed(
             class="text-primary dark:text-[#F0F0F0] size-12"
           />
           <p class="font-bold text-primary dark:text-[#F0F0F0]">
-            {{ property.features.area }}m²
+            {{ imovel?.metragem }}m²
           </p>
         </div>
       </UCard>
@@ -163,40 +154,31 @@ const mapSrc = computed(
     <div
       class="bg-[#F0F0F0] dark:bg-primary p-4 rounded-lg flex gap-y-4 flex-wrap justify-center items-center"
     >
-      <div class="flex justify-center gap-2 w-1/3">
-        <UIcon name="mdi:bed-empty" class="size-6 text-[#c0730f]" />
+      <div class="flex flex-col justify-center items-center w-1/3">
+        <div class="flex items-center gap-1">
+          <UIcon name="mdi:bed" class="text-[#c0730f] size-6" />
+          <p class="font-medium text-primary dark:text-[#F0F0F0]">Quartos</p>
+        </div>
         <p class="font-medium text-primary dark:text-[#F0F0F0]">
-          {{ property.features.bedrooms }} Quartos
+          {{ imovel?.quartos }}
         </p>
       </div>
-      <div class="flex justify-center gap-2 w-1/3">
-        <UIcon name="mdi:shower-head" class="text-[#c0730f] size-6" />
-        <p class="font-medium text-primary truncate dark:text-[#F0F0F0]">
-          {{ property.features.bathrooms }} Banheiros
+      <div class="flex flex-col justify-center items-center w-1/3">
+        <div class="flex items-center gap-1">
+          <UIcon name="mdi:shower-head" class="text-[#c0730f] size-6" />
+          <p class="font-medium text-primary dark:text-[#F0F0F0]">Banheiros</p>
+        </div>
+        <p class="font-medium text-primary dark:text-[#F0F0F0]">
+          {{ imovel?.vagasGaragem }}
         </p>
       </div>
-      <div class="flex justify-center gap-2 w-1/3">
-        <UIcon name="mdi:garage" class="text-[#c0730f] size-6" />
+      <div class="flex flex-col justify-center items-center w-1/3">
+        <div class="flex items-center gap-1">
+          <UIcon name="mdi:garage" class="text-[#c0730f] size-6" />
+          <p class="font-medium text-primary dark:text-[#F0F0F0]">Vagas</p>
+        </div>
         <p class="font-medium text-primary dark:text-[#F0F0F0]">
-          {{ property.features.garage }} Vagas
-        </p>
-      </div>
-      <div class="flex justify-center gap-2 w-1/3">
-        <UIcon name="mdi:bed" class="size-6 text-[#c0730f]" />
-        <p class="font-medium text-primary dark:text-[#F0F0F0]">
-          {{ property.features.suites }} Suítes
-        </p>
-      </div>
-      <div class="flex justify-center gap-2 w-1/3">
-        <UIcon name="mdi:tv" class="size-6 text-[#c0730f]" />
-        <p class="font-medium text-primary dark:text-[#F0F0F0]">
-          {{ property.features.rooms }} Sala
-        </p>
-      </div>
-      <div class="flex justify-center gap-2 w-1/3">
-        <UIcon name="mdi:office-building" class="size-6 text-[#c0730f]" />
-        <p class="font-medium text-primary dark:text-[#F0F0F0]">
-          {{ property.features.floor }}º Andar
+          {{ imovel?.vagasGaragem }}
         </p>
       </div>
     </div>
@@ -226,11 +208,15 @@ const mapSrc = computed(
 
   <div class="flex flex-col gap-4 px-8 mt-8">
     <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase">Status</h2>
-    <StepperDetails />
+    <StepperDetails
+      v-if="imovel?.status"
+      :current-status="imovel.status"
+      :datalancamento="imovel.dataLancamento"
+    />
   </div>
 
   <h2 class="font-extrabold text-[#C0730F] text-3xl uppercase px-8 mt-8">
     Descrição
   </h2>
-  <p class="px-8 mt-4">{{ property.description }}</p>
+  <p class="px-8 mt-4">{{ imovel?.descricao }}</p>
 </template>

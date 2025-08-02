@@ -2,7 +2,7 @@
   <div class="bg-tertiary w-full flex flex-col">
     <div class="relative h-[50dvh] w-full overflow-hidden">
       <transition name="fade">
-        <img
+        <NuxtImg
           v-if="currentImage"
           :key="currentImage"
           :src="currentImage"
@@ -86,7 +86,16 @@
           No momento você está buscando imóveis em
         </h1>
         <div class="px-11 flex flex-col justify-between gap-2">
-          <h2 class="text-white font-bold text-4xl">{{ local.toString() }}</h2>
+          <h2 class="text-white font-bold text-4xl">
+            {{
+              local.length === 0
+                ? "Rio de Janeiro"
+                : local.length === 1
+                  ? local[0]
+                  : `${local[0]} e mais ${local.length - 1}`
+            }}
+          </h2>
+
           <UModal title="Selecione uma região" description="Escolha uma opção">
             <UButton
               icon="mdi:map-marker"
@@ -97,21 +106,52 @@
               class="w-fit"
             />
 
-            <template #body>
-              <div class="flex flex-wrap gap-2 mt-4">
-                <UBadge
-                  v-for="bairro in bairros"
-                  :key="bairro"
-                  color="secondary"
+            <template #body="{ close }">
+              <div class="flex flex-col gap-4 mt-4">
+                <UInput
+                  icon="i-lucide-search"
+                  placeholder="Buscar bairro..."
+                  v-model="searchTerm"
                   variant="outline"
-                  :class="{
-                    'bg-secondary text-white': local === bairro,
-                  }"
-                  class="cursor-pointer"
-                  @click="local = bairro"
+                />
+                <div class="flex flex-wrap gap-2">
+                  <UBadge
+                    v-for="bairro in bairrosFiltrados"
+                    :key="bairro"
+                    color="secondary"
+                    variant="outline"
+                    :class="{
+                      'bg-secondary text-white': local.includes(bairro),
+                    }"
+                    class="cursor-pointer"
+                    @click="toggleBairro(bairro)"
+                  >
+                    {{ bairro }}
+                  </UBadge>
+                </div>
+
+                <div
+                  class="mt-10 flex flex-col gap-5 justify-between items-center"
                 >
-                  {{ bairro }}
-                </UBadge>
+                  <UButton
+                    icon="mdi:home"
+                    label="Ver todos os imóveis em Rio de Janeiro"
+                    @click="
+                      () => {
+                        local = [];
+                        close();
+                      }
+                    "
+                  />
+
+                  <UButton
+                    icon="i-lucide-check"
+                    label="Aplicar filtros"
+                    @click="close"
+                    color="secondary"
+                    variant="solid"
+                  />
+                </div>
               </div>
             </template>
           </UModal>
@@ -126,8 +166,11 @@
       :imoveis="imoveisFiltrados.slice(0, 5)"
     />
 
-    <PromotionalBanner />
-    <FeaturedPropertiesCarousel />
+    <PromotionalBanner v-if="novidade" :imovel="novidade" />
+    <FeaturedPropertiesCarousel
+      v-if="imoveisFiltrados"
+      :imoveis="imoveisFiltrados.slice(0, 10)"
+    />
     <RegionNavigation />
   </div>
 </template>
@@ -136,54 +179,68 @@
 import { ref } from "vue";
 import { GetAllItems } from "~/api/GetAPI";
 import type { Imovel } from "~/models/imovel";
+
 const showDetails = ref(false);
 const local = localState();
 
-const { data: imoveis, pending } = await useAsyncData<Imovel[]>(() =>
-  GetAllItems()
-);
+const { data: imoveis } = await useAsyncData<Imovel[]>(() => GetAllItems());
+const { data: novidade } = await useNovidade();
 
 const currentIndex = ref(0);
 const currentImage = ref<string | null>(null);
-const novidade = ref<Imovel | null>(null);
 let intervalId: number | undefined;
 
 watchEffect(() => {
-  if (imoveis.value && imoveis.value.length > 0) {
-    const destaque = imoveis.value.find((imovel) =>
-      imovel.tags?.includes("Novidade")
-    );
-    if (destaque) {
-      novidade.value = destaque;
-      currentImage.value = destaque.imagens?.[0] || null;
-
-      if (!intervalId && destaque.imagens?.length > 1) {
-        intervalId = window.setInterval(() => {
-          currentIndex.value =
-            (currentIndex.value + 1) % destaque.imagens.length;
-          currentImage.value = destaque.imagens[currentIndex.value];
-        }, 3000);
-      }
-    } else {
-      console.warn("Nenhum imóvel com tag 'Novidade' foi encontrado.");
-    }
+  if (!novidade.value) return;
+  currentImage.value = novidade.value.imagens?.[0] || null;
+  if (!intervalId && novidade.value.imagens?.length > 1) {
+    intervalId = window.setInterval(() => {
+      if (!novidade.value?.imagens) return;
+      currentIndex.value =
+        (currentIndex.value + 1) % novidade.value.imagens.length;
+      currentImage.value = novidade.value.imagens[currentIndex.value];
+    }, 3000);
   }
 });
 
 const imoveisFiltrados = computed(() => {
   if (!imoveis.value) return [];
 
-  return local.value === "Rio de Janeiro"
-    ? imoveis.value
-    : imoveis.value.filter((imovel) => imovel.bairro === local.value);
+  if (local.value.length === 0) return imoveis.value;
+
+  return imoveis.value.filter((imovel) => local.value.includes(imovel.bairro));
 });
+
+function toggleBairro(bairro: string) {
+  if (local.value.includes(bairro)) {
+    local.value = local.value.filter((b) => b !== bairro);
+  } else {
+    local.value.push(bairro);
+  }
+}
+
+const searchTerm = ref("");
+const bairrosFiltrados = computed(() =>
+  bairros.filter((bairro) =>
+    bairro.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
+);
+
 const bairros = [
-  "Copacabana",
-  "Ipanema",
-  "Barra da Tijuca",
-  "Botafogo",
   "Leblon",
-  "Tijuca",
-  "Alto do Impossível",
+  "Ipanema",
+  "Copacabana",
+  "Lagoa",
+  "Jardim Botânico",
+  "Gávea",
+  "São Conrado",
+  "Barra da Tijuca",
+  "Joá",
+  "Recreio dos Bandeirantes",
+  "Urca",
+  "Botafogo",
+  "Leme",
+  "Flamengo",
+  "Laranjeiras",
 ];
 </script>

@@ -41,7 +41,7 @@ namespace fbbn.API.Models
         #endregion
         [DynamoDBProperty] public List<string>? Imagens { get; set; } = [];
 
-        public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
+        [DynamoDBProperty] public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
 
         #region Constructors
         public Imovel()
