@@ -1,4 +1,17 @@
-<script setup>
+<script setup lang="ts">
+const emit = defineEmits<{
+  (e: "filtrarPorRegiao", bairros: string[]): void;
+}>();
+
+function filtrarRegiao(region: string) {
+  if (region === "Todos os empreendimentos") {
+    emit("filtrarPorRegiao", []);
+  } else {
+    const bairros = regioesMapeadas[region] || [];
+    emit("filtrarPorRegiao", bairros);
+  }
+}
+
 const regions = [
   "Todos os empreendimentos",
   "Zona Sul",
@@ -7,6 +20,27 @@ const regions = [
   "Jacarepaguá",
   "Zona Oeste",
 ];
+
+// pode colocar no <script setup> do RegionNavigation.vue
+const regioesMapeadas: Record<string, string[]> = {
+  "Zona Sul": [
+    "Copacabana",
+    "Ipanema",
+    "Leblon",
+    "Leme",
+    "Botafogo",
+    "Urca",
+    "Lagoa",
+    "Flamengo",
+    "Jardim Botânico",
+    "Gávea",
+    "São Conrado",
+  ],
+  "Barra e Recreio": ["Barra da Tijuca", "Recreio dos Bandeirantes", "Joá"],
+  "Zona Norte": ["Tijuca", "Grajaú", "Maracanã", "Méier"],
+  Jacarepaguá: ["Jacarepaguá"],
+  "Zona Oeste": ["Campo Grande", "Bangu", "Realengo"],
+};
 </script>
 
 <template>
@@ -17,6 +51,7 @@ const regions = [
         v-for="region in regions"
         :key="region"
         class="rounded-2xl py-4 text-sm flex justify-center bg-tertiary text-white h-24"
+        @click="filtrarRegiao(region)"
       >
         {{ region }}
       </UButton>

@@ -182,7 +182,7 @@
       v-if="imoveisFiltrados"
       :imoveis="imoveisFiltrados.slice(0, 10)"
     />
-    <RegionNavigation />
+    <RegionNavigation @filtrarPorRegiao="navegarParaBusca" />
   </div>
 </template>
 
@@ -261,4 +261,11 @@ const buscarImovel = () => {
   if (!searchQuery.value.trim()) return;
   router.push({ path: "/search", query: { q: searchQuery.value.trim() } });
 };
+function navegarParaBusca(bairros: string[]) {
+  const query: any = {};
+  if (bairros.length > 0) {
+    query.local = bairros;
+  }
+  router.push({ path: "/search", query });
+}
 </script>

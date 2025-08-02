@@ -6,8 +6,7 @@ import type { Imovel } from "~/models/imovel";
 import { parseInterval } from "~/utils/parseIntervals";
 
 const { data: imoveis } = await useAsyncData<Imovel[]>(() => GetAllItems());
-
-const local = localState();
+const { data: novidade } = await useNovidade();
 
 const imoveisFiltrados = computed(() => {
   if (!imoveis.value) return [];
@@ -44,12 +43,10 @@ const imoveisFiltrados = computed(() => {
     );
   }
 
-  // Aplica os filtros existentes
   filtrados = filtrados.filter((imovel) =>
     aplicarFiltros(imovel, filtros.value)
   );
 
-  // Ordenar por data se necessário
   if (filtros.value.filtrosRapidos?.ordenacao === "recentes") {
     filtrados.sort(
       (a, b) =>
@@ -59,7 +56,6 @@ const imoveisFiltrados = computed(() => {
 
   return filtrados.filter((imovel) => aplicarFiltros(imovel, filtros.value));
 });
-
 function aplicarFiltros(imovel: Imovel, filtros: Filtros) {
   // Filtro por tipo
   if (
@@ -116,6 +112,9 @@ function aplicarFiltros(imovel: Imovel, filtros: Filtros) {
   return true;
 }
 
+const local = localState();
+
+// Paginacao
 const page = ref(1);
 const itemsPerPage = ref(4);
 const imoveisPaginados = computed(() => {
@@ -123,9 +122,7 @@ const imoveisPaginados = computed(() => {
   const end = start + itemsPerPage.value;
   return imoveisFiltrados.value.slice(start, end);
 });
-
-const { data: novidade } = await useNovidade();
-
+// Texto de bairros selecionados
 const textoFiltro = computed(() => {
   if (!local.value || local.value.length === 0) return "todos os bairros";
 
@@ -134,6 +131,7 @@ const textoFiltro = computed(() => {
   return `${local.value[0]} e mais ${local.value.length - 1}`;
 });
 
+// Filtros do Slideover
 const filtros = ref<
   Filtros & {
     filtrosRapidos: {
@@ -161,10 +159,12 @@ const filtros = ref<
 function atualizarFiltros(novosFiltros: Filtros) {
   filtros.value = { ...novosFiltros };
 }
+
+// Filtros de busca
+const route = useRoute();
 const termoBusca = ref("");
 
-const route = useRoute();
-
+// Filtro de busca pela URL
 watchEffect(() => {
   const query = route.query.q;
   if (typeof query === "string") {
@@ -172,20 +172,27 @@ watchEffect(() => {
   }
 });
 
-const searchTerm = ref("");
+// Filtro de locais pela URL
+watchEffect(() => {
+  const queryLocal = route.query.local;
 
-function toggleBairro(bairro: string) {
-  if (local.value.includes(bairro)) {
-    local.value = local.value.filter((b) => b !== bairro);
+  if (Array.isArray(queryLocal)) {
+    local.value = queryLocal.filter((b): b is string => typeof b === "string");
+  } else if (typeof queryLocal === "string") {
+    local.value = [queryLocal];
   } else {
-    local.value.push(bairro);
+    local.value = [];
   }
-}
+});
+
+// Pesquisar em selecionar bairros
+const termoBuscaBairro = ref("");
 const bairrosFiltrados = computed(() =>
   bairros.filter((bairro) =>
-    bairro.toLowerCase().includes(searchTerm.value.toLowerCase())
+    bairro.toLowerCase().includes(termoBuscaBairro.value.toLowerCase())
   )
 );
+
 const bairros = [
   "Leblon",
   "Ipanema",
@@ -203,6 +210,14 @@ const bairros = [
   "Flamengo",
   "Laranjeiras",
 ];
+
+function toggleBairro(bairro: string) {
+  if (local.value.includes(bairro)) {
+    local.value = local.value.filter((b) => b !== bairro);
+  } else {
+    local.value.push(bairro);
+  }
+}
 </script>
 
 <template class="relative">
@@ -250,7 +265,7 @@ const bairros = [
           <UInput
             icon="i-lucide-search"
             placeholder="Buscar bairro..."
-            v-model="searchTerm"
+            v-model="termoBuscaBairro"
             variant="outline"
           />
           <div class="flex flex-wrap gap-2">
