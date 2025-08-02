@@ -162,6 +162,47 @@ function atualizarFiltros(novosFiltros: Filtros) {
   filtros.value = { ...novosFiltros };
 }
 const termoBusca = ref("");
+
+const route = useRoute();
+
+watchEffect(() => {
+  const query = route.query.q;
+  if (typeof query === "string") {
+    termoBusca.value = query;
+  }
+});
+
+const searchTerm = ref("");
+
+function toggleBairro(bairro: string) {
+  if (local.value.includes(bairro)) {
+    local.value = local.value.filter((b) => b !== bairro);
+  } else {
+    local.value.push(bairro);
+  }
+}
+const bairrosFiltrados = computed(() =>
+  bairros.filter((bairro) =>
+    bairro.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
+);
+const bairros = [
+  "Leblon",
+  "Ipanema",
+  "Copacabana",
+  "Lagoa",
+  "Jardim Botânico",
+  "Gávea",
+  "São Conrado",
+  "Barra da Tijuca",
+  "Joá",
+  "Recreio dos Bandeirantes",
+  "Urca",
+  "Botafogo",
+  "Leme",
+  "Flamengo",
+  "Laranjeiras",
+];
 </script>
 
 <template class="relative">
@@ -193,7 +234,65 @@ const termoBusca = ref("");
     Foram encontrado(s) {{ imoveisFiltrados.length }} imóvel(is) em
     {{ textoFiltro }}.
   </h3>
+  <div class="px-8 py-3">
+    <UModal title="Selecione uma região" description="Escolha uma opção">
+      <UButton
+        icon="mdi:map-marker"
+        label="Selecione uma região do seu interesse"
+        color="secondary"
+        variant="solid"
+        size="lg"
+        class="w-fit"
+      />
 
+      <template #body="{ close }">
+        <div class="flex flex-col gap-4 mt-4">
+          <UInput
+            icon="i-lucide-search"
+            placeholder="Buscar bairro..."
+            v-model="searchTerm"
+            variant="outline"
+          />
+          <div class="flex flex-wrap gap-2">
+            <UBadge
+              v-for="bairro in bairrosFiltrados"
+              :key="bairro"
+              color="secondary"
+              variant="outline"
+              :class="{
+                'bg-secondary text-white': local.includes(bairro),
+              }"
+              class="cursor-pointer"
+              @click="toggleBairro(bairro)"
+            >
+              {{ bairro }}
+            </UBadge>
+          </div>
+
+          <div class="mt-10 flex flex-col gap-5 justify-between items-center">
+            <UButton
+              icon="mdi:home"
+              label="Ver todos os imóveis em Rio de Janeiro"
+              @click="
+                () => {
+                  local = [];
+                  close();
+                }
+              "
+            />
+
+            <UButton
+              icon="i-lucide-check"
+              label="Aplicar filtros"
+              @click="close"
+              color="secondary"
+              variant="solid"
+            />
+          </div>
+        </div>
+      </template>
+    </UModal>
+  </div>
   <div v-if="imoveisFiltrados.length > 0" class="flex flex-col gap-4 px-4 mt-8">
     <div
       v-for="imovel in imoveisPaginados"
@@ -267,13 +366,12 @@ const termoBusca = ref("");
       </NuxtLink>
     </div>
   </div>
-  <div v-else class="text-center py-10 px-6 bg-white rounded-lg shadow-md">
-    <h4 class="text-xl font-semibold text-gray-700">
-      Nenhum imóvel encontrado
-    </h4>
-    <p class="text-gray-500 mt-2">
-      Tente selecionar outro bairro ou ajustar sua busca.
-    </p>
+  <div
+    v-else
+    class="text-center py-10 px-6 m-8 bg-white dark:bg-accented rounded-lg shadow-md"
+  >
+    <h4 class="text-xl font-semibold">Nenhum imóvel encontrado</h4>
+    <p class="mt-2">Tente selecionar outro bairro ou ajustar sua busca.</p>
   </div>
   <UPagination
     v-model:page="page"

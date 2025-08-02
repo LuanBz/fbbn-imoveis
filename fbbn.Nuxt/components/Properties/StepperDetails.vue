@@ -3,7 +3,7 @@ import type { StepperItem } from "@nuxt/ui";
 
 const props = defineProps<{
   currentStatus: string;
-  datalancamento?: Date | null;
+  datalancamento?: string | null;
 }>();
 const items = ref<StepperItem[]>([
   {

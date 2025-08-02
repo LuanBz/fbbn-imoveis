@@ -351,7 +351,7 @@ const filtrosRapidos = ref({
           </div>
           <UButton
             label="Resetar filtros"
-            color="primary"
+            color="secondary"
             size="xl"
             variant="outline"
             block

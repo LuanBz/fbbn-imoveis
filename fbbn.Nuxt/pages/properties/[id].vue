@@ -6,10 +6,17 @@ import type { Imovel } from "~/models/imovel";
 import StepperDetails from "~/components/Properties/StepperDetails.vue";
 
 const route = useRoute();
+const router = useRouter();
 const id = route.params.id as string;
 
 const { data: imovel } = await useAsyncData<Imovel>(() => GetItemById(id));
 const { data: novidade } = await useNovidade();
+
+const searchQuery = ref("");
+const buscarImovel = () => {
+  if (!searchQuery.value.trim()) return;
+  router.push({ path: "/search", query: { q: searchQuery.value.trim() } });
+};
 
 const mapSrc = computed(() => {
   if (!imovel.value?.endereco) return "";
@@ -36,16 +43,22 @@ const mapSrc = computed(() => {
     </div>
     <PromotionalBanner v-if="novidade" :imovel="novidade" />
     <div class="p-4">
-      <UInput
-        icon="i-lucide-search"
-        :ui="{ leadingIcon: 'text-secondary', base: 'py-4' }"
-        size="xl"
-        color="secondary"
-        class="w-full grow flex"
-        variant="outline"
-        placeholder="Pesquise outro imóvel do seu interesse
-        "
-      />
+      <div class="flex items-center gap-2">
+        <UInput
+          v-model="searchQuery"
+          icon="i-lucide-search"
+          :ui="{ leadingIcon: 'text-secondary', base: 'py-4' }"
+          size="xl"
+          color="secondary"
+          class="w-full grow flex"
+          variant="outline"
+          placeholder="Pesquise outro imóvel do seu interesse"
+          @keydown.enter="buscarImovel"
+        />
+        <UButton @click="buscarImovel" color="primary" class="h-14"
+          >Buscar</UButton
+        >
+      </div>
     </div>
   </div>
 

@@ -73,13 +73,24 @@
     </div>
     <div class="min-h-[50dvh] mb-8 bg-tertiary">
       <div class="mx-4 mt-8 p-4 bg-clean dark:bg-primary rounded-full">
-        <UInput
-          icon="i-lucide-search"
-          size="xl"
-          class="w-full"
-          variant="ghost"
-          placeholder="Pesquise um local ou característica do imóvel..."
-        />
+        <div class="flex items-center gap-2">
+          <UInput
+            v-model="searchQuery"
+            icon="i-lucide-search"
+            size="xl"
+            class="w-full"
+            variant="ghost"
+            placeholder="Pesquise um local ou característica de um imóvel"
+            @keydown.enter="buscarImovel"
+          />
+          <UButton
+            @click="buscarImovel"
+            class="h-14"
+            variant="ghost"
+            label="Buscar"
+            :ui="{ label: `dark:text-white` }"
+          />
+        </div>
       </div>
       <div class="w-full justify-between">
         <h1 class="text-white px-11 mt-4 font-light text-xl">
@@ -243,4 +254,11 @@ const bairros = [
   "Flamengo",
   "Laranjeiras",
 ];
+
+const router = useRouter();
+const searchQuery = ref("");
+const buscarImovel = () => {
+  if (!searchQuery.value.trim()) return;
+  router.push({ path: "/search", query: { q: searchQuery.value.trim() } });
+};
 </script>
