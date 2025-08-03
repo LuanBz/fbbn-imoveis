@@ -1,2 +1,47 @@
 export const localState = () =>
   useState<string[]>("locale", () => []);
+
+export const regioesMapeadas: Record<string, string[]> = {
+  "Zona Sul": [
+    "Botafogo",
+    "Copacabana",
+    "Flamengo",
+    "Gávea",
+    "Humaitá",
+    "Ipanema",
+    "Jardim Botânico",
+    "Lagoa",
+    "Laranjeiras",
+    "Leblon",
+    "São Conrado",
+    "Urca",
+    "Glória",
+    "Catete",
+  ],
+  "Zona Norte": [
+    "Cachambi",
+    "Campo dos Afonsos",
+    "Del Castilho",
+    "Engenho de Dentro",
+    "Grajaú",
+    "Méier",
+    "Penha",
+    "São Cristóvão",
+    "Vila da Penha",
+    "Vila Isabel",
+    "Tijuca",
+    "Maracanã",
+  ],
+  "Zona Oeste": [
+    "Campo Grande",
+    "Bangu",
+    "Realengo",
+    "Jacarepaguá",
+    "Guaratiba",
+    "Barra da Tijuca",
+    "Recreio dos Bandeirantes",
+    "Joá",
+    "Itanhangá",
+  ],
+  Centro: ["Centro", "Zona Portuária"],
+};

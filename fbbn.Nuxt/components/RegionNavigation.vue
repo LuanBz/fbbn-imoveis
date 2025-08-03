@@ -20,27 +20,6 @@ const regions = [
   "Jacarepaguá",
   "Zona Oeste",
 ];
-
-// pode colocar no <script setup> do RegionNavigation.vue
-const regioesMapeadas: Record<string, string[]> = {
-  "Zona Sul": [
-    "Copacabana",
-    "Ipanema",
-    "Leblon",
-    "Leme",
-    "Botafogo",
-    "Urca",
-    "Lagoa",
-    "Flamengo",
-    "Jardim Botânico",
-    "Gávea",
-    "São Conrado",
-  ],
-  "Barra e Recreio": ["Barra da Tijuca", "Recreio dos Bandeirantes", "Joá"],
-  "Zona Norte": ["Tijuca", "Grajaú", "Maracanã", "Méier"],
-  Jacarepaguá: ["Jacarepaguá"],
-  "Zona Oeste": ["Campo Grande", "Bangu", "Realengo"],
-};
 </script>
 
 <template>

@@ -187,29 +187,21 @@ watchEffect(() => {
 
 // Pesquisar em selecionar bairros
 const termoBuscaBairro = ref("");
-const bairrosFiltrados = computed(() =>
-  bairros.filter((bairro) =>
-    bairro.toLowerCase().includes(termoBuscaBairro.value.toLowerCase())
-  )
-);
+const regioesFiltradas = computed(() => {
+  const termo = termoBuscaBairro.value.toLowerCase();
+  const resultado: Record<string, string[]> = {};
 
-const bairros = [
-  "Leblon",
-  "Ipanema",
-  "Copacabana",
-  "Lagoa",
-  "Jardim Botânico",
-  "Gávea",
-  "São Conrado",
-  "Barra da Tijuca",
-  "Joá",
-  "Recreio dos Bandeirantes",
-  "Urca",
-  "Botafogo",
-  "Leme",
-  "Flamengo",
-  "Laranjeiras",
-];
+  for (const [regiao, bairros] of Object.entries(regioesMapeadas)) {
+    const filtrados = bairros.filter((bairro) =>
+      bairro.toLowerCase().includes(termo)
+    );
+    if (filtrados.length > 0) {
+      resultado[regiao] = filtrados;
+    }
+  }
+
+  return resultado;
+});
 
 function toggleBairro(bairro: string) {
   if (local.value.includes(bairro)) {
@@ -250,14 +242,14 @@ function toggleBairro(bairro: string) {
     {{ textoFiltro }}.
   </h3>
   <div class="px-8 py-3">
-    <UModal title="Selecione uma região" description="Escolha uma opção">
+    <UModal title="Selecione uma região" description="Escolha uma opção"">
       <UButton
         icon="mdi:map-marker"
         label="Selecione uma região do seu interesse"
         color="secondary"
         variant="solid"
         size="lg"
-        class="w-fit"
+        class="w-full justify-center"
       />
 
       <template #body="{ close }">
@@ -268,20 +260,31 @@ function toggleBairro(bairro: string) {
             v-model="termoBuscaBairro"
             variant="outline"
           />
-          <div class="flex flex-wrap gap-2">
-            <UBadge
-              v-for="bairro in bairrosFiltrados"
-              :key="bairro"
-              color="secondary"
-              variant="outline"
-              :class="{
-                'bg-secondary text-white': local.includes(bairro),
-              }"
-              class="cursor-pointer"
-              @click="toggleBairro(bairro)"
+          <div class="flex flex-col gap-4">
+            <div
+              v-for="(bairros, regiao) in regioesFiltradas"
+              :key="regiao"
+              class="flex flex-col gap-2"
             >
-              {{ bairro }}
-            </UBadge>
+              <h3 class="text-lg font-semibold text-secondary">
+                {{ regiao }}
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <UBadge
+                  v-for="bairro in bairros"
+                  :key="bairro"
+                  color="secondary"
+                  variant="outline"
+                  :class="{
+                    'bg-secondary text-white': local.includes(bairro),
+                  }"
+                  class="cursor-pointer"
+                  @click="toggleBairro(bairro)"
+                >
+                  {{ bairro }}
+                </UBadge>
+              </div>
+            </div>
           </div>
 
           <div class="mt-10 flex flex-col gap-5 justify-between items-center">
