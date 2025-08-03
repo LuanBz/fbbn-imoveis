@@ -210,6 +210,20 @@ function toggleBairro(bairro: string) {
     local.value.push(bairro);
   }
 }
+function toggleRegiao(regiao: string) {
+  const bairros = regioesMapeadas[regiao];
+  const todosSelecionados = bairros.every((b) => local.value.includes(b));
+
+  if (todosSelecionados) {
+    // Desmarca todos os bairros da região
+    local.value = local.value.filter((b) => !bairros.includes(b));
+  } else {
+    // Adiciona todos que ainda não estão na lista
+    const novos = bairros.filter((b) => !local.value.includes(b));
+    local.value = [...local.value, ...novos];
+  }
+}
+
 </script>
 
 <template class="relative">
@@ -242,7 +256,7 @@ function toggleBairro(bairro: string) {
     {{ textoFiltro }}.
   </h3>
   <div class="px-8 py-3">
-    <UModal title="Selecione uma região" description="Escolha uma opção"">
+    <UModal title="Selecione uma região" description="Escolha uma ou mais opções"">
       <UButton
         icon="mdi:map-marker"
         label="Selecione uma região do seu interesse"
@@ -260,23 +274,33 @@ function toggleBairro(bairro: string) {
             v-model="termoBuscaBairro"
             variant="outline"
           />
-          <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-4 max-h-[500px] min-h-[500px] overflow-y-auto">
             <div
               v-for="(bairros, regiao) in regioesFiltradas"
               :key="regiao"
               class="flex flex-col gap-2"
             >
-              <h3 class="text-lg font-semibold text-secondary">
-                {{ regiao }}
-              </h3>
+              <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-secondary">{{ regiao }}</h3>
+  <UButton
+    size="xs"
+    color="secondary"
+    variant="ghost"
+    icon="mdi:checkbox-multiple-marked"
+    @click="toggleRegiao(regiao)"
+    class="text-sm"
+    label="Selecionar todos"
+  />
+</div>
+
               <div class="flex flex-wrap gap-2">
                 <UBadge
                   v-for="bairro in bairros"
                   :key="bairro"
-                  color="secondary"
                   variant="outline"
                   :class="{
                     'bg-secondary text-white': local.includes(bairro),
+                    'text-secondary dark:text-inverted': !local.includes(bairro),
                   }"
                   class="cursor-pointer"
                   @click="toggleBairro(bairro)"
