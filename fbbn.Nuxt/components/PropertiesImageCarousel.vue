@@ -82,7 +82,7 @@ function openFullscreen(image: string) {
     </div>
   </div>
 
-  <UModal v-model:open="showFullscreen">
+  <UModal v-model:open="showFullscreen" fullscreen>
     <template #content>
       <div class="flex justify-end">
         <UButton
@@ -93,7 +93,7 @@ function openFullscreen(image: string) {
         />
       </div>
 
-      <div class="w-full h-[70vh] flex flex-col justify-center items-center">
+      <div class="w-full h-[100vh] flex flex-col justify-center items-center">
         <UCarousel
           ref="fullscreenCarouselRef"
           v-slot="{ item }"
@@ -104,7 +104,7 @@ function openFullscreen(image: string) {
           class="w-full mx-auto bg-accented"
           @select="onSelectModal"
         >
-          <div class="flex justify-center items-center h-[40vh]">
+          <div class="flex justify-center items-center h-[70vh]">
             <img
               :src="item"
               class="max-w-full max-h-full object-contain touch-pan-y"
