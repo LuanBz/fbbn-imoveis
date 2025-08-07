@@ -1,9 +1,11 @@
-div
 <script setup lang="ts">
 import * as v from "valibot";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { vMaska } from "maska/vue";
 import type { MaskInputOptions } from "maska";
+import { GetAllItems } from "~/api/GetAPI";
+import type { Imovel } from "~/models/imovel";
+import { createItem } from "~/api/PostAPI";
 
 const optionsMaska = reactive<MaskInputOptions>({
   number: { fraction: 2, unsigned: true },
@@ -20,6 +22,26 @@ const tipoImovel = ref([
 ]);
 
 const status = ref(["Pré-Lançamento", "Lançamento", "Em obras", "Pronto"]);
+
+const { data: imovel } = await useAsyncData<Imovel[]>(() => GetAllItems());
+
+const tags = computed(() => {
+  if (!imovel.value) return [];
+
+  return imovel.value
+    .map((i) => i.tags)
+    .flat()
+    .filter((t) => !!t)
+    .map((t) => t.trim())
+    .filter((t, i, self) => self.indexOf(t) === i)
+    .sort();
+});
+
+function onCreate(item: string) {
+  state.tags.push(item as never);
+}
+
+const posicaoSol = ref(["Sol da manhã", "Sol da tarde", "Sol Passante"]);
 
 type Schema = v.InferOutput<typeof schema>;
 const schema = v.object({
@@ -72,17 +94,75 @@ const state = reactive({
   dataLancamento: "",
 
   preco: "",
-  precoM2: "",
+  precom2: "",
 });
 
 const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({
-    title: "Success",
-    description: "The form has been submitted.",
-    color: "success",
-  });
-  console.log(event.data);
+  try {
+    const payload: Imovel = {
+      imovelId: "", // backend pode gerar
+      nome: state.nome,
+      descricao: state.descricao,
+      endereco: `${state.rua}, ${state.numero}`,
+      numero: Number(state.numero),
+      rua: state.rua,
+      bairro: state.bairro,
+      cidade: state.cidade,
+      estado: state.estado,
+      cep: state.cep,
+      latitude: 0, // precisa vir do mapa (se tiver)
+      longitude: 0,
+      status: state.status,
+      tags: state.tags,
+      caracteristicas: state.caracteristicas,
+      preco: parseFloat(state.preco.replace(/\./g, "").replace(",", ".")),
+      precom2: parseFloat(state.precom2.replace(/\./g, "").replace(",", ".")),
+      dataLancamento: state.dataLancamento,
+      tipo: state.tipo,
+      areaTotal: parseFloat(state.areaTotal),
+      areaConstruida: parseFloat(state.areaConstruida || "0"),
+      metragem:
+        state.areaMin && state.areaMax
+          ? `${state.areaMin} a ${state.areaMax} m²`
+          : `${state.areaTotal} m²`,
+      quartos:
+        state.quartosMin && state.quartosMax
+          ? `${state.quartosMin} a ${state.quartosMax}`
+          : `${state.quartos}`,
+
+      banheiros:
+        state.banheirosMin && state.banheirosMax
+          ? `${state.banheirosMin} a ${state.banheirosMax}`
+          : `${state.banheiros}`,
+
+      suites:
+        state.suitesMin && state.suitesMax
+          ? `${state.suitesMin} a ${state.suitesMax}`
+          : `${state.suites}`,
+
+      vagasGaragem:
+        state.vagasMin && state.vagasMax
+          ? `${state.vagasMin} a ${state.vagasMax}`
+          : `${state.vagas}`,
+
+      posicaoSol: state.posicaoSol || "",
+      imagens: [],
+    };
+
+    await createItem(payload);
+    toast.add({
+      title: "Success",
+      description: "The form has been submitted.",
+      color: "success",
+    });
+  } catch (error) {
+    toast.add({
+      title: "Erro",
+      description: "Não foi possível cadastrar o imóvel.",
+      color: "error",
+    });
+  }
 }
 </script>
 
@@ -134,9 +214,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             <!-- create-item @create="onCreate" -->
             <UInputMenu
               v-model="state.tags"
+              :items="tags"
               multiple
+              create-item
+              @create="onCreate"
               delete-icon="i-lucide-trash"
-              class="h-12 w-full"
+              class="min-h-12 w-full"
               :ui="{
                 root: 'h-full',
                 tagsItem: 'p-2 gap-2 ',
@@ -165,6 +248,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UFormField class="col-span-2" label="CEP" name="cep" required>
             <UInput
               v-model="state.cep"
+              v-maska="'#####-###'"
               placeholder="Ex: 22772-330"
               type="string"
               class="w-full h-12"
@@ -306,14 +390,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           </UFormField>
           <UFormField
             label="Preço por m²"
-            name="precoM2"
+            name="precom2"
             :hint="
               ['Empreendimento'].includes(state.tipo) ? 'A partir de:' : ''
             "
             required
           >
             <UInput
-              v-model="state.precoM2"
+              v-model="state.precom2"
               v-maska="optionsMaska"
               icon="mdi:currency-brl"
               placeholder="20.000,00"
@@ -408,6 +492,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               />
             </div>
           </UFormField>
+          <UFormField label="Data de lançamento">
+            <UInput
+              v-model="state.dataLancamento"
+              v-maska="'##/####'"
+              placeholder="MM/AAAA"
+              icon="i-lucide-calendar"
+              class="h-12 w-full"
+              :ui="{ base: 'h-full' }"
+          /></UFormField>
         </div>
 
         <div
@@ -446,13 +539,21 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               :ui="{ base: 'h-full' }"
             />
           </UFormField>
+          <UFormField label="Posição do Sol">
+            <USelect
+              v-model="state.posicaoSol"
+              :items="posicaoSol"
+              class="h-12 w-full"
+              :ui="{ base: 'h-full' }"
+            />
+          </UFormField>
         </div>
 
         <UFormField
-          label="Características"
-          name="caracteríticqas"
+          label="Caracteristicas"
+          name="caracteriticas"
           hint="Adicione mais características"
-          help="Use as características para descrever outros detalhes sobre o imóvel."
+          help="Use o campo acima para descrever outras características sobre o imóvel."
           class="col-span-2"
         >
           <UInputMenu
