@@ -13,6 +13,8 @@ namespace fbbn.API.Models
         [DynamoDBProperty] public string Nome { get; set; }
         [DynamoDBProperty] public string Descricao { get; set; }
         [DynamoDBProperty] public string Endereco { get; set; }
+        [DynamoDBProperty] public string Rua { get; set; }
+        [DynamoDBProperty] public string Numero { get; set; }
         [DynamoDBProperty] public string Bairro { get; set; }
         [DynamoDBProperty] public string Cidade { get; set; }
         [DynamoDBProperty] public string Estado { get; set; }
@@ -21,6 +23,8 @@ namespace fbbn.API.Models
         [DynamoDBProperty] public double? Longitude { get; set; }
         [DynamoDBProperty] public string? Status { get; set; }
         [DynamoDBProperty] public List<string?> Tags { get; set; } = [];
+        [DynamoDBProperty] public List<string?> Caracteristicas { get; set; } = [];
+
         #endregion
 
         #region Price Attributes
@@ -35,6 +39,7 @@ namespace fbbn.API.Models
         [DynamoDBProperty] public double AreaConstruida { get; set; }
         [DynamoDBProperty] public string? Metragem { get; set; }
         [DynamoDBProperty] public string? Quartos { get; set; }
+        [DynamoDBProperty] public string? Suites { get; set; }
         [DynamoDBProperty] public string? Banheiros { get; set; }
         [DynamoDBProperty] public string? VagasGaragem { get; set; }
         [DynamoDBProperty] public string? PosicaoSol { get; set; }
@@ -50,18 +55,22 @@ namespace fbbn.API.Models
             Nome = string.Empty;
             Descricao = string.Empty;
             Endereco = string.Empty;
+            Numero = string.Empty;
+            Rua = string.Empty;
             Bairro = string.Empty;
             Cidade = string.Empty;
             Estado = string.Empty;
             CEP = string.Empty;
             Tipo = string.Empty;
         }
-        public Imovel(string Nome, string Descricao, string Endereco, string Bairro, string Cidade, string Estado, string CEP, double? Latitude, double? Longitude, string? Status, List<string?> Tags, decimal Preco, decimal Precom2, string? DataLancamento, string? Tipo, double AreaTotal, double AreaConstruida, string? Metragem, string? Quartos, string? Banheiros, string? VagasGaragem, string? posicaoSol)
+        public Imovel(string Nome, string Descricao, string Endereco, string Rua, string Numero, string Bairro, string Cidade, string Estado, string CEP, double? Latitude, double? Longitude, string? Status, List<string?> Tags,List<string?> Caracteristicas, decimal Preco, decimal Precom2, string? DataLancamento, string? Tipo, double AreaTotal, double AreaConstruida, string? Metragem, string? Quartos, string? Suites, string? Banheiros, string? VagasGaragem, string? posicaoSol)
         {
             imovelId = Guid.NewGuid().ToString();
             this.Nome = Nome ?? throw new ArgumentNullException(nameof(Nome));
             this.Descricao = Descricao ?? throw new ArgumentNullException(nameof(Descricao));
             this.Endereco = Endereco ?? throw new ArgumentNullException(nameof(Endereco));
+            this.Rua = Rua ?? throw new ArgumentNullException(nameof(Rua));
+            this.Numero = Numero ?? throw new ArgumentNullException(nameof(Numero));
             this.Bairro = Bairro ?? throw new ArgumentNullException(nameof(Bairro));
             this.Cidade = Cidade ?? throw new ArgumentNullException(nameof(Cidade));
             this.Estado = Estado ?? throw new ArgumentNullException(nameof(Estado));
@@ -70,6 +79,7 @@ namespace fbbn.API.Models
             this.Longitude = Longitude;
             this.Status = Status;
             this.Tags = Tags;
+            this.Caracteristicas = Caracteristicas;
             this.AreaTotal = AreaTotal;
             this.AreaConstruida = AreaConstruida;
             this.Preco = Preco;
@@ -77,9 +87,12 @@ namespace fbbn.API.Models
             this.DataLancamento = DataLancamento;
             this.Tipo = Tipo ?? throw new ArgumentNullException(nameof(Tipo));
             this.Metragem = Metragem;
+            this.Suites = Suites;
             this.Quartos = Quartos;
             this.Banheiros = Banheiros;
             this.VagasGaragem = VagasGaragem;
+
+            
             DataCadastro = DateTime.UtcNow;
             PosicaoSol = posicaoSol;
         }
@@ -88,6 +101,8 @@ namespace fbbn.API.Models
             Nome = dto.Nome ?? Nome;
             Descricao = dto.Descricao ?? Descricao;
             Endereco = dto.Endereco ?? Endereco;
+            Rua = dto.Rua ?? Rua;
+            Numero = dto.Numero ?? Numero;
             Bairro = dto.Bairro ?? Bairro;
             Cidade = dto.Cidade ?? Cidade;
             Estado = dto.Estado ?? Estado;
@@ -96,8 +111,10 @@ namespace fbbn.API.Models
             Preco = dto.Preco ?? Preco;
             Precom2 = dto.Precom2 ?? Precom2;
             Tipo = dto.Tipo ?? Tipo;
+            Caracteristicas = dto.Caracteristicas ?? Caracteristicas;
             Metragem = dto.Metragem ?? Metragem;
             Quartos = dto.Quartos ?? Quartos;
+            Suites = dto.Suites ?? Suites;
             Banheiros = dto.Banheiros ?? Banheiros;
             VagasGaragem = dto.VagasGaragem ?? VagasGaragem;
             PosicaoSol = dto.PosicaoSol ?? PosicaoSol;
