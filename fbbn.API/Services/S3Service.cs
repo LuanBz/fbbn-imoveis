@@ -21,11 +21,11 @@ namespace fbbn.API.Services
             var bucketName = _config["AWS:BucketName"]!;
             var urls = new List<string>();
             var transferUtility = new TransferUtility(_s3Client);
-            foreach (var img in imgs)
-            {
-                if (img.Length == 0) continue;
-                var fileName = $"imoveis/{imovelId}/{Guid.NewGuid()}_{img.FileName}";
 
+            var tasks = imgs.Select(img =>
+            {
+                if (img.Length == 0) return Task.CompletedTask;
+                var fileName = $"imoveis/{imovelId}/{Guid.NewGuid()}_{img.FileName}";
                 var uploadRequest = new TransferUtilityUploadRequest
                 {
                     InputStream = img.OpenReadStream(),
@@ -33,9 +33,15 @@ namespace fbbn.API.Services
                     Key = fileName,
                     ContentType = img.ContentType
                 };
-                await transferUtility.UploadAsync(uploadRequest);
-                urls.Add($"https://{bucketName}.s3.amazonaws.com/{fileName}");
-            }
+                return transferUtility.UploadAsync(uploadRequest).ContinueWith(t =>
+                {
+                    if (t.IsCompletedSuccessfully)
+                    {
+                        urls.Add($"https://{bucketName}.s3.amazonaws.com/{fileName}");
+                    }
+                });
+            });
+            await Task.WhenAll(tasks);
             return urls;
         }
         public async Task AttachImagesToImovel(string imovelId, List<string> urls)
@@ -47,23 +53,33 @@ namespace fbbn.API.Services
 
             var imovelDTO = new ImovelUpdateDTO
             {
+                Imagens = imovel.Imagens,
                 Nome = imovel.Nome,
                 Descricao = imovel.Descricao,
                 Endereco = imovel.Endereco,
+                Rua = imovel.Rua,
+                Numero = imovel.Numero,
                 Bairro = imovel.Bairro,
                 Cidade = imovel.Cidade,
                 Estado = imovel.Estado,
                 CEP = imovel.CEP,
-                DataLancamento = imovel.DataLancamento,
+                Status = imovel.Status,
+                Tags = imovel.Tags,
+                Caracteristicas = imovel.Caracteristicas,
+                Latitude = imovel.Latitude,
+                Longitude = imovel.Longitude,
                 Preco = imovel.Preco,
                 Precom2 = imovel.Precom2,
+                DataLancamento = imovel.DataLancamento,
                 Tipo = imovel.Tipo,
+                AreaTotal = imovel.AreaTotal,
+                AreaConstruida = imovel.AreaConstruida,
                 Metragem = imovel.Metragem,
                 Quartos = imovel.Quartos,
+                Suites = imovel.Suites,
                 Banheiros = imovel.Banheiros,
                 VagasGaragem = imovel.VagasGaragem,
-                PosicaoSol = imovel.PosicaoSol,
-                Imagens = imovel.Imagens
+                PosicaoSol = imovel.PosicaoSol
             };
 
             await _imovelService.UpdateImovelAsync(imovel.imovelId, imovelDTO);
