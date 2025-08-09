@@ -25,16 +25,22 @@ function toggleBairro(bairro: string) {
     local.value.push(bairro);
   }
 }
+function formatLabel(bairros: string[]) {
+  if (bairros.length === 0) return "Buscando imóveis em Rio de Janeiro";
+  if (bairros.length <= 2) return bairros.join(", ");
+
+  const firstBairro = bairros.slice(0, 2).join(", ");
+  const othersBairro = bairros.length - 2;
+  return `${firstBairro} e mais ${othersBairro}`;
+}
 </script>
 <template>
   <UModal title="Selecione uma região" description="Escolha uma opção">
     <UButton
       icon="mdi:map-marker"
-      label="Selecione uma região do seu interesse"
-      color="secondary"
-      variant="solid"
-      size="lg"
-      class="w-full"
+      :label="formatLabel(local)"
+      size="xl"
+      class="w-full rounded-2xl md:w-[350px] bg-secondary my-1 truncate"
     />
 
     <template #body="{ close }">

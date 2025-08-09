@@ -28,6 +28,13 @@ const items = ref<DropdownMenuItem[][]>([
         route.push("/map");
       },
     },
+    {
+      label: "Buscar imóveis",
+      icon: "mdi:search",
+      onSelect: () => {
+        route.push("/search");
+      },
+    },
   ],
   [
     {

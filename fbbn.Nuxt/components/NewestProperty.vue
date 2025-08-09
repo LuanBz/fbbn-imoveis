@@ -43,7 +43,7 @@ watchEffect(() => {
       <div class="flex flex-row gap-4 p-8 items-end">
         <div
           v-if="showDetails && imovel"
-          class="grow grid grid-cols-3 p-4 bg-clean dark:bg-primary rounded-xl"
+          class="grow grid grid-cols-3 p-4 bg-clean dark:bg-primary rounded-xl md:visible"
         >
           <div class="col-span-2 gap-2 flex flex-col">
             <div class="flex flex-row items-center gap-1">
@@ -54,8 +54,8 @@ watchEffect(() => {
             </div>
             <div class="flex flex-col gap-1">
               <h2 class="text-2xl font-bold truncate">{{ imovel.nome }}</h2>
-              <h3 class="text-xl font-normal">
-                ~R$ {{ formatPrice(imovel.precom2) }} /m²
+              <h3 class="text-xl font-bold">
+                ~R${{ formatPrice(imovel.precom2) }}/m²
               </h3>
             </div>
           </div>
@@ -69,6 +69,7 @@ watchEffect(() => {
               <p class="text-sm text-right font-medium">
                 {{ imovel.metragem }}m²
               </p>
+              <UIcon name="mdi:ruler-square" class="size-6" />
             </div>
           </div>
           <div class="flex flex-row col-span-3 gap-2 mt-4">

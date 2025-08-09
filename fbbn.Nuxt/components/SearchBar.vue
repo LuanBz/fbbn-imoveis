@@ -8,22 +8,21 @@ const buscarImovel = () => {
 };
 </script>
 <template>
-  <div class="mx-4 my-6 p-2 bg-white dark:bg-primary rounded-full">
-    <div class="flex items-center gap-2">
+  <div class="bg-white dark:bg-primary rounded-2xl md:my-1 md:w-122">
+    <div class="flex items-center">
       <UInput
         v-model="searchQuery"
         icon="i-lucide-search"
         size="xl"
+        variant="none"
         class="w-full"
-        variant="ghost"
         placeholder="Pesquise um local ou característica de um imóvel"
         @keydown.enter="buscarImovel"
       />
       <UButton
         @click="buscarImovel"
-        class="h-14"
-        variant="ghost"
-        icon="i-lucide-search"
+        class="mx-2 rounded-xl"
+        icon="i-lucide-arrow-right"
         :ui="{ label: `dark:text-white` }"
       />
     </div>

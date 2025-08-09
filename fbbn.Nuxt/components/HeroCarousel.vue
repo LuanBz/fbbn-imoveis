@@ -19,8 +19,8 @@ defineProps({
       :ui="{
         dot: 'data-[state=active]:bg-secondary bg-inverted',
       }"
-      :autoplay="{ delay: 10000 }"
-      class="w-full max-w-dvw mx-auto mb-8"
+      :autoplay="{ delay: 5000 }"
+      class="w-full max-w-dvw select-none"
     >
       <template #default="{ item }">
         <HeroCard v-if="item" :imovel="item" />

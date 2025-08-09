@@ -12,13 +12,13 @@ defineProps({
 
 <template>
   <div
-    class="relative text-white rounded-3xl h-[400px] flex flex-col overflow-hidden w-full"
+    class="relative text-white rounded-3xl h-[400px] flex flex-col overflow-hidden w-full md:h-[520px]"
   >
     <nuxt-img
       v-if="imovel.imagens && imovel.imagens.length > 0"
       :src="imovel.imagens[0]"
       :alt="imovel.nome"
-      class="w-full h-56 object-cover"
+      class="w-full h-56 object-cover md:h-7/12"
       format="webp"
       quality="80"
     />
@@ -51,20 +51,23 @@ defineProps({
           <UIcon name="mdi:shower-head" class="size-6" />
         </div>
         <div class="flex flex-row gap-1">
-          <p class="text-md font-bold">{{ imovel.metragem }}m²</p>
+          <p class="text-md font-bold truncate">{{ imovel.metragem }}m²</p>
           <UIcon name="mdi:ruler-square" class="size-6" />
         </div>
       </div>
-      <div class="flex flex-row col-span-3 gap-2 mt-2">
-        <UButton color="tertiary" variant="solid" class="w-50 justify-center"
+      <div class="flex flex-row justify-center col-span-3 gap-2 mt-2">
+        <UButton
+          color="tertiary"
+          variant="solid"
+          class="w-50 justify-center grow cursor-pointer"
           >Agende sua visita</UButton
         >
-        <NuxtLink :to="`/properties/${imovel.imovelId}`" class="w-50">
+        <NuxtLink :to="`/properties/${imovel.imovelId}`" class="w-50 grow">
           <UButton
             trailing-icon="i-lucide-arrow-right"
             color="secondary"
             variant="solid"
-            class="w-full h-full justify-center"
+            class="w-full h-full justify-center cursor-pointer"
             >Ver Mais</UButton
           ></NuxtLink
         >
